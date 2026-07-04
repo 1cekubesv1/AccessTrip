@@ -11,3 +11,7 @@ allowBuilds:
   # lefthook ships its binary via the platform optional-dependency
   # (lefthook-linux-x64), so its own postinstall download is redundant.
   lefthook: false
+  # @vapi-ai/mcp-docs-server (Vapi docs MCP) pulls these in; sharp needs its
+  # native binary or the server crashes on start, protobufjs builds its runtime.
+  protobufjs: true
+  sharp: true
