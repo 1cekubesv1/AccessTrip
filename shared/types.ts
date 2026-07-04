@@ -264,6 +264,32 @@ export interface LiveJourney {
   error?: string
 }
 
+// Official accessibility registry for establishments (acceslibre — data.gouv.fr).
+// `count`/`accessible` are populated when an ACCESLIBRE_TOKEN is configured;
+// otherwise a verified reference sample is returned so the demo still lands.
+export interface AccessRegistry {
+  commune: string
+  count: number | null // ERPs referenced with accessibility data
+  accessible: number | null // of which step-free entrance (entrée de plain-pied)
+  sample: string[] // a few establishment names
+  source: string // 'acceslibre (data.gouv.fr)' | 'acceslibre (référence)'
+  live: boolean
+  configured: boolean // whether a token is set
+}
+
+// Wheelchair-profile pedestrian route (OpenRouteService). Avoids stairs, weighs
+// kerb height / incline / surface. Populated when ORS_TOKEN is configured.
+export interface AccessibleRoute {
+  from: string
+  to: string
+  distanceM: number | null
+  durationMin: number | null
+  stairsFree: boolean
+  source: string // 'OpenRouteService' | 'OpenRouteService (référence)'
+  live: boolean
+  configured: boolean
+}
+
 export interface ContextResponse {
   ok: boolean
   sncf?: SncfRegularity
@@ -271,6 +297,8 @@ export interface ContextResponse {
   assistance?: StationAssistance
   osm?: AccessibleVenues
   navitia?: LiveJourney
+  acceslibre?: AccessRegistry
+  route?: AccessibleRoute
   realtime?: RealtimeDisruptions
   error?: string
 }

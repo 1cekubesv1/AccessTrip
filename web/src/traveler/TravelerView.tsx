@@ -1,4 +1,6 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+import { FileText } from 'lucide-react'
 import Timeline from './Timeline'
 import Passport from './Passport'
 import type { AppState } from '../../../shared/types'
@@ -7,6 +9,11 @@ import type { AppState } from '../../../shared/types'
 export default function TravelerView({ state }: { state: AppState }) {
   return (
     <div className="page">
+      <div className="traveler-actions no-print">
+        <Link to="/rapport" className="report-link">
+          <FileText size={16} aria-hidden="true" /> Rapport imprimable
+        </Link>
+      </div>
       <div className="phone-wrap">
         <div className="phone">
           <div className="phone-notch" aria-hidden="true" />

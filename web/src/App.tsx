@@ -6,6 +6,8 @@ import TravelerDetail from './traveler/TravelerDetail'
 import OpsView from './ops/OpsView'
 import DemoPanel from './demo/DemoPanel'
 import GuidedDemo from './demo/GuidedDemo'
+import TripReport from './traveler/TripReport'
+import ThemeToggle from './ThemeToggle'
 import { Wordmark } from './Logo'
 import { APP_TAGLINE } from './config'
 
@@ -28,8 +30,10 @@ export default function App() {
           </NavLink>
           <NavLink to="/traveler/camille">Voyageuse</NavLink>
           <NavLink to="/ops">Centre de contrôle</NavLink>
+          <NavLink to="/rapport">Rapport</NavLink>
           <NavLink to="/demo">Démo</NavLink>
         </nav>
+        <ThemeToggle />
         <span className="conn-status muted" role="status" aria-live="polite">
           {connected ? '● en direct' : '○ hors ligne'}
         </span>
@@ -43,6 +47,7 @@ export default function App() {
             <Route path="/" element={<FleetView state={state} />} />
             <Route path="/traveler/:id" element={<TravelerDetail state={state} />} />
             <Route path="/ops" element={<OpsView state={state} reload={reload} />} />
+            <Route path="/rapport" element={<TripReport state={state} />} />
             <Route path="/demo" element={<DemoPanel state={state} reload={reload} />} />
           </Routes>
         )}

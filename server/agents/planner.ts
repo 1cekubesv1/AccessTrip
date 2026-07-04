@@ -2,7 +2,7 @@
 // determines which steps are at risk and proposes a minimal remediation plan that
 // never compromises accessibility. Uses Claude when available; falls back to a
 // hardcoded plan so Flow A always runs offline.
-import { claudeJSON, hasClaude } from './claude.js'
+import { claudeJSON, claudeEnabled } from './claude.js'
 import type { Traveler, Step, Disruption, ReplanPlan } from '../../shared/types.js'
 
 const PLAN_SCHEMA = {
@@ -83,7 +83,7 @@ export async function planRemediation({
   fallback,
 }: PlanRemediationArgs): Promise<PlanRemediationResult> {
   const fb = fallback || fallbackPlan()
-  if (!hasClaude()) return { plan: fb, source: 'fallback' }
+  if (!claudeEnabled()) return { plan: fb, source: 'fallback' }
 
   try {
     const user = JSON.stringify({

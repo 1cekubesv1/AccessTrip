@@ -3,7 +3,7 @@
 // offline. On a failed re-confirmation it drives the escalation + recovery path.
 import { getState, setStepStatus, appendLedger, appendAgentLog } from '../state.js'
 import { pushEvent } from '../events.js'
-import { claudeJSON, hasClaude } from './claude.js'
+import { claudeJSON, claudeEnabled } from './claude.js'
 import { reason, agentActive, think } from './trace.js'
 import type { TranscriptChunk, Extracted, ReplanPlan, LogLevel } from '../../shared/types.js'
 
@@ -103,7 +103,7 @@ function fallbackExtract(transcript: TranscriptChunk[]): Extracted {
 async function extract(
   transcript: TranscriptChunk[],
 ): Promise<{ data: Extracted; source: 'claude' | 'fallback'; error?: string }> {
-  if (!hasClaude()) return { data: fallbackExtract(transcript), source: 'fallback' }
+  if (!claudeEnabled()) return { data: fallbackExtract(transcript), source: 'fallback' }
   try {
     const data = (await claudeJSON({
       system: SYSTEM,
