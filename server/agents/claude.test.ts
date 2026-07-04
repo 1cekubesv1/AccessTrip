@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach, vi } from 'vitest'
-import { hasClaude, authHeaders, baseUrl } from './claude'
+import { hasClaude, hasClaudeCLI, claudeEnabled, authHeaders, baseUrl } from './claude'
 
 // hasClaude/authHeaders/baseUrl read env at call time, so stubEnv is enough — no
 // module reload needed. Clear all stubbed vars after each test.
@@ -24,6 +24,44 @@ describe('hasClaude', () => {
     vi.stubEnv('ANTHROPIC_API_KEY', '')
     vi.stubEnv('ANTHROPIC_AUTH_TOKEN', '')
     expect(hasClaude()).toBe(false)
+  })
+})
+
+describe('hasClaudeCLI', () => {
+  it('is true when ANTHROPIC_VIA_CLI is truthy (1/true/on)', () => {
+    for (const v of ['1', 'true', 'yes', 'on', 'TRUE']) {
+      vi.stubEnv('ANTHROPIC_VIA_CLI', v)
+      expect(hasClaudeCLI()).toBe(true)
+    }
+  })
+
+  it('is false when unset or falsy', () => {
+    vi.stubEnv('ANTHROPIC_VIA_CLI', '')
+    expect(hasClaudeCLI()).toBe(false)
+    vi.stubEnv('ANTHROPIC_VIA_CLI', '0')
+    expect(hasClaudeCLI()).toBe(false)
+  })
+})
+
+describe('claudeEnabled', () => {
+  it('is true via HTTP token', () => {
+    vi.stubEnv('ANTHROPIC_API_KEY', 'sk-test')
+    vi.stubEnv('ANTHROPIC_VIA_CLI', '')
+    expect(claudeEnabled()).toBe(true)
+  })
+
+  it('is true via the CLI bridge alone', () => {
+    vi.stubEnv('ANTHROPIC_API_KEY', '')
+    vi.stubEnv('ANTHROPIC_AUTH_TOKEN', '')
+    vi.stubEnv('ANTHROPIC_VIA_CLI', '1')
+    expect(claudeEnabled()).toBe(true)
+  })
+
+  it('is false with no token and no CLI flag', () => {
+    vi.stubEnv('ANTHROPIC_API_KEY', '')
+    vi.stubEnv('ANTHROPIC_AUTH_TOKEN', '')
+    vi.stubEnv('ANTHROPIC_VIA_CLI', '')
+    expect(claudeEnabled()).toBe(false)
   })
 })
 
