@@ -2,6 +2,12 @@
 
 _Drive Claude Code milestone by milestone (M1→M6), not all at once. After each milestone: run it, demo-click it, then continue._
 
+> ⚠️ **Narrative superseded (2026-07-04).** This spec is organized around the
+> **disruption → replan** flow. The product now leads with the **initial-reservation**
+> narrative (agent proactively calls providers to secure accessibility before departure);
+> disruption is kept as a possible future feature. The technical shape (Express + SSE +
+> agents + plugins) still holds. Canonical vision: [`AGENTS.md`](../../AGENTS.md).
+
 ---
 
 ## 0. Mission & constraints

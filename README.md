@@ -1,11 +1,24 @@
 # AccessTrip
 
-AI trip-orchestration platform for disabled travelers. Hackathon demo — one traveler
-(Camille Moreau), one trip (Paris → Nice), live-updated over SSE.
+AI trip-orchestration platform for disabled travelers. One traveler (Camille Moreau), one
+trip (Paris → Nice), French UI.
 
-Build proceeds milestone by milestone (M1 → M6). See [`docs/architecture/spec.md`](docs/architecture/spec.md).
+> **Direction (2026-07-04).** The product now leads with the **initial-reservation** story:
+> at booking time an AI agent **proactively calls providers** (airport for wheelchair
+> assistance, hotel for a roll-in shower) to secure accessibility _before departure_, and logs
+> the confirmations. The earlier **disruption / re-planning** flow (below) is kept but demoted
+> to a possible future feature. The repo now holds **two deliverables** — a stylized static
+> demo landing page (`apps/demo`, → GitHub Pages) and this real MVP (repo root), in a pnpm
+> workspace. **Canonical vision + repo map: [`AGENTS.md`](AGENTS.md)** · plan:
+> [`RESTRUCTURE_PLAN.md`](RESTRUCTURE_PLAN.md).
 
-Full documentation lives in [`docs/`](docs/README.md).
+Full documentation lives in [`docs/`](docs/README.md) — note some deeper docs predate the
+pivot and carry a banner pointing here.
+
+## History — the milestone build (M1 → M6)
+
+The sections below record the disruption-centric build the app grew from. It's accurate
+history and the code still runs; treat the _narrative_ as superseded by AGENTS.md.
 
 ## Status
 

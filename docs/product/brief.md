@@ -5,6 +5,13 @@ Version 1 - 4 juillet 2026
 Auteur : Guillaume Kone
 Contexte : Hackathon Capgemini
 
+> ⚠️ **Narratif superseded (2026-07-04).** Ce brief est centre sur la **cascade d'imprevu**
+> (perturbation → re-planification). Le produit met desormais en avant la **reservation
+> initiale** : l'agent appelle les prestataires de maniere proactive pour securiser
+> l'accessibilite _avant le depart_. La partie perturbation est conservee comme piste future.
+> Reference qui fait foi : [`AGENTS.md`](../../AGENTS.md). Ce document sera reecrit en
+> consequence.
+
 ---
 
 ## 1. Le projet en une phrase

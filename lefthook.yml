@@ -6,6 +6,9 @@ pre-commit:
   jobs:
     - name: format
       glob: '*.{ts,tsx,js,jsx,json,css,md,html,yml,yaml}'
+      # CLAUDE.md is a symlink to AGENTS.md; Prettier errors on symlinks passed
+      # explicitly. Exclude it — its target is formatted on its own.
+      exclude: 'CLAUDE.md'
       run: node node_modules/prettier/bin/prettier.cjs --write {staged_files}
       stage_fixed: true
     - name: lint
