@@ -7,13 +7,27 @@ const NICE = { lat: 43.7031, lon: 7.2661 }
 // WMO weather codes → French label + whether it's a disruptive condition.
 function describe(code: number | null | undefined): [string, boolean] {
   const map: Record<number, [string, boolean]> = {
-    0: ['Ciel dégagé', false], 1: ['Peu nuageux', false], 2: ['Partiellement nuageux', false], 3: ['Couvert', false],
-    45: ['Brouillard', true], 48: ['Brouillard givrant', true],
-    51: ['Bruine légère', false], 53: ['Bruine', false], 55: ['Bruine dense', true],
-    61: ['Pluie faible', false], 63: ['Pluie', true], 65: ['Pluie forte', true],
-    71: ['Neige faible', true], 73: ['Neige', true], 75: ['Neige forte', true],
-    80: ['Averses', true], 81: ['Averses fortes', true], 82: ['Averses violentes', true],
-    95: ['Orage', true], 96: ['Orage + grêle', true], 99: ['Orage violent', true],
+    0: ['Ciel dégagé', false],
+    1: ['Peu nuageux', false],
+    2: ['Partiellement nuageux', false],
+    3: ['Couvert', false],
+    45: ['Brouillard', true],
+    48: ['Brouillard givrant', true],
+    51: ['Bruine légère', false],
+    53: ['Bruine', false],
+    55: ['Bruine dense', true],
+    61: ['Pluie faible', false],
+    63: ['Pluie', true],
+    65: ['Pluie forte', true],
+    71: ['Neige faible', true],
+    73: ['Neige', true],
+    75: ['Neige forte', true],
+    80: ['Averses', true],
+    81: ['Averses fortes', true],
+    82: ['Averses violentes', true],
+    95: ['Orage', true],
+    96: ['Orage + grêle', true],
+    99: ['Orage violent', true],
   }
   return (code != null && map[code]) || ['Conditions variables', false]
 }
@@ -38,7 +52,15 @@ export async function fetchNiceWeather(): Promise<NiceWeather> {
       live: true,
     }
   } catch {
-    return { tempC: null, windKmh: null, code: null, label: 'Indisponible', disruptive: false, source: 'Open-Meteo', live: false }
+    return {
+      tempC: null,
+      windKmh: null,
+      code: null,
+      label: 'Indisponible',
+      disruptive: false,
+      source: 'Open-Meteo',
+      live: false,
+    }
   } finally {
     clearTimeout(t)
   }

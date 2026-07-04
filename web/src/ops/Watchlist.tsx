@@ -16,17 +16,27 @@ export default function Watchlist({ steps }: WatchlistProps) {
           <li
             key={s.id}
             style={{
-              display: 'flex', alignItems: 'center', gap: '0.6rem',
-              padding: '0.5rem 0', borderBottom: '1px solid var(--line)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.6rem',
+              padding: '0.5rem 0',
+              borderBottom: '1px solid var(--line)',
             }}
           >
-            <span className="muted" style={{ fontFamily: 'ui-monospace, monospace', minWidth: 28 }}>{s.id}</span>
+            <span className="muted" style={{ fontFamily: 'ui-monospace, monospace', minWidth: 28 }}>
+              {s.id}
+            </span>
             <span style={{ flex: 1, minWidth: 0 }}>
               <span style={{ fontWeight: 600 }}>{s.title}</span>
               <br />
-              <span className="muted" style={{ fontSize: '0.85rem' }}>{s.when} · {s.provider}</span>
+              <span className="muted" style={{ fontSize: '0.85rem' }}>
+                {s.when} · {s.provider}
+              </span>
               {s.reason && (
-                <><br /><span className="reason-chip">⚠ {s.reason}</span></>
+                <>
+                  <br />
+                  <span className="reason-chip">⚠ {s.reason}</span>
+                </>
               )}
             </span>
             <StatusBadge status={s.status} />

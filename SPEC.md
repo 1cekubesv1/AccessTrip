@@ -1,5 +1,6 @@
 # AccessTrip — Claude Code Build Spec (hackathon)
-*Drive Claude Code milestone by milestone (M1→M6), not all at once. After each milestone: run it, demo-click it, then continue.*
+
+_Drive Claude Code milestone by milestone (M1→M6), not all at once. After each milestone: run it, demo-click it, then continue._
 
 ---
 
@@ -8,6 +9,7 @@
 Build a working demo of **AccessTrip**: an AI trip-orchestration platform for disabled travelers. One hardcoded user (Camille), one hardcoded trip (Paris→Nice). The demo must run on localhost, updated live via SSE, and survive a 5-minute stage demo including a real AI phone call.
 
 **Hard constraints — do not violate:**
+
 - Single repo, single Node process serving both API and frontend. No auth, no real database (lowdb/JSON file), no Docker, no tests beyond one smoke script, no TypeScript strictness battles (plain JS or loose TS).
 - Everything must be resettable to initial state in one click (`/demo` panel → Reset).
 - Frontend: React + Vite. Backend: Express. Realtime: Server-Sent Events (one `/events` stream).
@@ -67,21 +69,21 @@ See `server/seed.js` — matches the spec verbatim (traveler Camille Moreau, 7 s
 
 ## 5. Agent prompts (embed verbatim, adapt lightly)
 
-**Planner** (Claude, JSON out): *"Tu es l'agent planificateur d'AccessTrip. Voici le profil fonctionnel du voyageur, les étapes du voyage avec dépendances, et un événement de perturbation. Détermine quelles étapes sont à risque et propose un plan de remédiation minimal qui préserve les besoins d'accessibilité (jamais de compromis sur: transfert assisté, sans marche, douche italienne). Réponds en JSON: {at_risk: [stepId], plan: [{stepId, action, new_time, rationale}], message_voyageur: '...'}. Le message_voyageur doit être calme et rassurant, 2 phrases max."*
+**Planner** (Claude, JSON out): _"Tu es l'agent planificateur d'AccessTrip. Voici le profil fonctionnel du voyageur, les étapes du voyage avec dépendances, et un événement de perturbation. Détermine quelles étapes sont à risque et propose un plan de remédiation minimal qui préserve les besoins d'accessibilité (jamais de compromis sur: transfert assisté, sans marche, douche italienne). Réponds en JSON: {at_risk: [stepId], plan: [{stepId, action, new_time, rationale}], message_voyageur: '...'}. Le message_voyageur doit être calme et rassurant, 2 phrases max."_
 
-**Extractor** (Claude, JSON out): *"Extrait de cette transcription d'appel téléphonique une confirmation structurée. JSON strict: {confirmed_by: string, role: string, room_available: bool, room_number: string|null, roll_in_shower: bool|null, bed_height_ok: bool|null, reference: string|null, commitments: [string], red_flags: [string]}. Si l'interlocuteur est évasif ou contradictoire, mets le point concerné à null et ajoute un red_flag."*
+**Extractor** (Claude, JSON out): _"Extrait de cette transcription d'appel téléphonique une confirmation structurée. JSON strict: {confirmed_by: string, role: string, room_available: bool, room_number: string|null, roll_in_shower: bool|null, bed_height_ok: bool|null, reference: string|null, commitments: [string], red_flags: [string]}. Si l'interlocuteur est évasif ou contradictoire, mets le point concerné à null et ajoute un red_flag."_
 
-**Vapi assistant system prompt (French voice):** *"Tu es l'assistante vocale d'AccessTrip, appelant au nom de [Assureur] pour Mme Camille Moreau. Objectif: re-confirmer la réservation de la chambre 104 accessible (douche à l'italienne, référence BR-104-ACC) pour le 12 septembre. Sois brève, polie, professionnelle. Annonce en début d'appel que tu es une assistante automatisée et que l'appel est enregistré. Obtiens: la chambre est-elle bien réservée, le nom de ton interlocuteur, une référence. Si la chambre n'est plus disponible: reste calme, demande quelles alternatives accessibles existent, indique qu'un conseiller va rappeler, remercie. Ne raccroche jamais sans avoir reformulé ce qui a été dit."*
+**Vapi assistant system prompt (French voice):** _"Tu es l'assistante vocale d'AccessTrip, appelant au nom de [Assureur] pour Mme Camille Moreau. Objectif: re-confirmer la réservation de la chambre 104 accessible (douche à l'italienne, référence BR-104-ACC) pour le 12 septembre. Sois brève, polie, professionnelle. Annonce en début d'appel que tu es une assistante automatisée et que l'appel est enregistré. Obtiens: la chambre est-elle bien réservée, le nom de ton interlocuteur, une référence. Si la chambre n'est plus disponible: reste calme, demande quelles alternatives accessibles existent, indique qu'un conseiller va rappeler, remercie. Ne raccroche jamais sans avoir reformulé ce qui a été dit."_
 
 **Receptionist script (teammate — 3 branches, rehearse all):** B1 happy: confirms room 104, gives name "Mme Laurent". B2 **stage branch**: "Ah… la 104 a été réattribuée, nous n'avons plus de chambre accessible ce soir-là" — polite, slightly embarrassed, offers nothing. B3 evasive: "il faudrait voir avec ma collègue demain" (tests red_flag path). On stage: play B2.
 
 ## 6. Milestones for Claude Code (build in this order)
 
-- **M1 (spine):** server + state + seed + SSE + traveler timeline + ops layout + demo panel with Reset. *Done when: timeline renders green from seed, reset works.* ✅
-- **M2 (agent log + chaos):** agent_events feed + watchdog + chaos button + planner (with hardcoded fallback) + cascade + replan card + apply. *Done when: Flow A runs end-to-end offline.*
-- **M3 (voice):** Vapi integration, call trigger, webhook, live transcript panel. *Done when: a real phone rings and bubbles stream.*
-- **M4 (extraction):** extractor on call end → ledger → step flip → escalation path with recovery plan. *Done when: Flow B runs end-to-end with a test call.*
-- **M5 (aces):** vision endpoint + verdict card; replica PRM form + headed Playwright autofill. *Done when: both run from the demo panel.*
+- **M1 (spine):** server + state + seed + SSE + traveler timeline + ops layout + demo panel with Reset. _Done when: timeline renders green from seed, reset works._ ✅
+- **M2 (agent log + chaos):** agent_events feed + watchdog + chaos button + planner (with hardcoded fallback) + cascade + replan card + apply. _Done when: Flow A runs end-to-end offline._
+- **M3 (voice):** Vapi integration, call trigger, webhook, live transcript panel. _Done when: a real phone rings and bubbles stream._
+- **M4 (extraction):** extractor on call end → ledger → step flip → escalation path with recovery plan. _Done when: Flow B runs end-to-end with a test call._
+- **M5 (aces):** vision endpoint + verdict card; replica PRM form + headed Playwright autofill. _Done when: both run from the demo panel._
 - **M6 (a11y + demo hardening):** VoiceOver pass, aria-live verified, keyboard-only run; demo panel force-step overrides for every SSE event (invisible insurance).
 
 ## 7. How to drive Claude Code

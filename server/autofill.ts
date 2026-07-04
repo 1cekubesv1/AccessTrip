@@ -14,14 +14,19 @@ function log(level: LogLevel, message: string): void {
 
 // Returns { ok, error? }. Never throws — a missing Playwright install degrades
 // gracefully with an agent-log message rather than breaking the demo.
-export async function runAutofill({ port = process.env.PORT || 3000 }: { port?: number | string } = {}): Promise<{ ok: boolean; error?: string }> {
+export async function runAutofill({
+  port = process.env.PORT || 3000,
+}: { port?: number | string } = {}): Promise<{ ok: boolean; error?: string }> {
   let chromium
   try {
     const mod = await import('playwright')
     chromium = mod.chromium || mod.default?.chromium
     if (!chromium) throw new Error('chromium export missing')
   } catch {
-    log('error', 'Playwright non installé — exécutez `pnpm pw:install` (installe le navigateur Chromium).')
+    log(
+      'error',
+      'Playwright non installé — exécutez `pnpm pw:install` (installe le navigateur Chromium).',
+    )
     return { ok: false, error: 'playwright_not_installed' }
   }
 
@@ -57,7 +62,10 @@ export async function runAutofill({ port = process.env.PORT || 3000 }: { port?: 
       await page.check(sel)
       await page.waitForTimeout(STEP_DELAY / 2)
     }
-    await page.fill('#remarques', "Douche à l'italienne requise à l'arrivée. Assistance quai confirmée.")
+    await page.fill(
+      '#remarques',
+      "Douche à l'italienne requise à l'arrivée. Assistance quai confirmée.",
+    )
     await page.waitForTimeout(STEP_DELAY)
     await page.click('.submit')
     await page.waitForTimeout(1200)

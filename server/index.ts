@@ -5,7 +5,7 @@ import fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import apiRouter from './routes/api.js'
 import vapiWebhookRouter from './routes/vapi-webhook.js'
-import { addClient, pushEvent, clientCount } from './events.js'
+import { addClient, clientCount } from './events.js'
 import { getState } from './state.js'
 
 // Load .env by hand (no dependency) so ANTHROPIC/VAPI keys are available in later milestones.
@@ -31,7 +31,11 @@ app.get('/events', (req: Request, res: Response) => {
 
   // heartbeat so proxies don't drop the idle connection during a demo
   const ping = setInterval(() => {
-    try { res.write(': ping\n\n') } catch { clearInterval(ping) }
+    try {
+      res.write(': ping\n\n')
+    } catch {
+      clearInterval(ping)
+    }
   }, 15000)
   req.on('close', () => clearInterval(ping))
 })
@@ -46,14 +50,21 @@ app.use('/webhooks', vapiWebhookRouter)
 app.use('/prm-form', express.static(path.join(__dirname, 'prm-form')))
 
 // --- health ---
-app.get('/healthz', (req: Request, res: Response) => res.json({ ok: true, steps: getState().trip.steps.length }))
+app.get('/healthz', (req: Request, res: Response) =>
+  res.json({ ok: true, steps: getState().trip.steps.length }),
+)
 
 // --- static frontend (production build). In dev, Vite serves the UI and proxies here. ---
 const distDir = path.join(__dirname, '..', 'web', 'dist')
 if (fs.existsSync(distDir)) {
   app.use(express.static(distDir))
   app.get('*', (req: Request, res: Response, next: NextFunction) => {
-    if (req.path.startsWith('/api') || req.path.startsWith('/events') || req.path.startsWith('/webhooks')) return next()
+    if (
+      req.path.startsWith('/api') ||
+      req.path.startsWith('/events') ||
+      req.path.startsWith('/webhooks')
+    )
+      return next()
     res.sendFile(path.join(distDir, 'index.html'))
   })
 }

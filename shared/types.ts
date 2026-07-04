@@ -100,13 +100,7 @@ export interface ReasoningEntry {
 // --- call / transcript / extraction ------------------------------------------
 
 export type CallStatus =
-  | 'idle'
-  | 'dialing'
-  | 'ringing'
-  | 'in_progress'
-  | 'ended'
-  | 'extracted'
-  | 'queued'
+  'idle' | 'dialing' | 'ringing' | 'in_progress' | 'ended' | 'extracted' | 'queued'
 
 export interface TranscriptChunk {
   speaker: 'assistant' | 'human'

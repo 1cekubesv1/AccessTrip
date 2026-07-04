@@ -12,12 +12,33 @@ export function LogoMark({ size = 28 }: { size?: number }) {
           <stop offset="1" stopColor="#17b877" />
         </linearGradient>
       </defs>
-      <rect x="1" y="1" width="30" height="30" rx="9" fill="var(--bg-elevated)" stroke="var(--line)" />
-      <path d="M8 22 C 8 14, 16 18, 16 12 S 24 8, 24 10" stroke="url(#lg-route)" strokeWidth="2.4" strokeLinecap="round" fill="none" />
+      <rect
+        x="1"
+        y="1"
+        width="30"
+        height="30"
+        rx="9"
+        fill="var(--bg-elevated)"
+        stroke="var(--line)"
+      />
+      <path
+        d="M8 22 C 8 14, 16 18, 16 12 S 24 8, 24 10"
+        stroke="url(#lg-route)"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+        fill="none"
+      />
       <circle cx="8" cy="22" r="2.6" fill="#4fb0ff" />
       <circle cx="16" cy="15.5" r="2.2" fill="#3f9bde" />
       <circle cx="24" cy="10" r="3.2" fill="#17b877" />
-      <path d="M22.6 10 l1 1 l1.8 -2" stroke="#06263f" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <path
+        d="M22.6 10 l1 1 l1.8 -2"
+        stroke="#06263f"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
     </svg>
   )
 }
@@ -27,7 +48,10 @@ export function Wordmark() {
   return (
     <span className="brand">
       <LogoMark />
-      <span className="brand-text">{a}<span className="dot">{b}</span></span>
+      <span className="brand-text">
+        {a}
+        <span className="dot">{b}</span>
+      </span>
     </span>
   )
 }

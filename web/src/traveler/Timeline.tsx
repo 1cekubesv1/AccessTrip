@@ -43,7 +43,9 @@ export default function Timeline({ steps, ledger = [] }: TimelineProps) {
 
   return (
     <section aria-labelledby="timeline-title">
-      <h3 id="timeline-title" className="sr-only">Étapes du voyage</h3>
+      <h3 id="timeline-title" className="sr-only">
+        Étapes du voyage
+      </h3>
       <ol className="timeline" aria-live="polite">
         {steps.map((step) => {
           const receipts = receiptsFor(step.id)
@@ -61,11 +63,16 @@ export default function Timeline({ steps, ledger = [] }: TimelineProps) {
                     <span className="step-meta">
                       {step.when} · {step.provider}
                       {receipts.length > 0 && (
-                        <> · <span className="muted">{receipts.length} reçu(s)</span></>
+                        <>
+                          {' '}
+                          · <span className="muted">{receipts.length} reçu(s)</span>
+                        </>
                       )}
                     </span>
                     {step.reason && (
-                      <span className="reason-chip" style={{ marginTop: '0.35rem' }}>⚠ {step.reason}</span>
+                      <span className="reason-chip" style={{ marginTop: '0.35rem' }}>
+                        ⚠ {step.reason}
+                      </span>
                     )}
                   </span>
                   <StatusBadge status={step.status} />
@@ -73,16 +80,25 @@ export default function Timeline({ steps, ledger = [] }: TimelineProps) {
                 <div className="step-receipts">
                   <p className="muted" style={{ margin: '0 0 0.4rem' }}>
                     Référence : <span className="ref">{step.ref}</span>
-                    {step.reconfirm_due && <> · <strong>re-confirmation due</strong></>}
+                    {step.reconfirm_due && (
+                      <>
+                        {' '}
+                        · <strong>re-confirmation due</strong>
+                      </>
+                    )}
                   </p>
                   {receipts.length === 0 ? (
-                    <p className="muted" style={{ margin: 0 }}>Aucun reçu enregistré pour l'instant.</p>
+                    <p className="muted" style={{ margin: 0 }}>
+                      Aucun reçu enregistré pour l'instant.
+                    </p>
                   ) : (
                     receipts.map((r, i) => (
                       <div className="receipt" key={i}>
                         <div>
                           Confirmé par <strong>{r.confirmed_by}</strong>{' '}
-                          <span className="muted">({r.channel}, {r.at})</span>
+                          <span className="muted">
+                            ({r.channel}, {r.at})
+                          </span>
                         </div>
                         <div className="ref">{r.ref}</div>
                         {r.notes && <div className="muted">{r.notes}</div>}

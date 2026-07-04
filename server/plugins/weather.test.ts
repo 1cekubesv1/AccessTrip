@@ -6,16 +6,22 @@ afterEach(() => {
 })
 
 function stubFetch(impl: () => Promise<Response> | Response) {
-  vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(impl())))
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(() => Promise.resolve(impl())),
+  )
 }
 
 describe('fetchNiceWeather', () => {
   it('normalises current conditions and rounds temp/wind', async () => {
-    stubFetch(() =>
-      new Response(
-        JSON.stringify({ current: { temperature_2m: 21.6, weather_code: 3, wind_speed_10m: 12.4 } }),
-        { status: 200 },
-      ),
+    stubFetch(
+      () =>
+        new Response(
+          JSON.stringify({
+            current: { temperature_2m: 21.6, weather_code: 3, wind_speed_10m: 12.4 },
+          }),
+          { status: 200 },
+        ),
     )
     const out = await fetchNiceWeather()
     expect(out).toEqual({
@@ -30,11 +36,12 @@ describe('fetchNiceWeather', () => {
   })
 
   it('flags disruptive conditions (e.g. heavy rain code 65)', async () => {
-    stubFetch(() =>
-      new Response(
-        JSON.stringify({ current: { temperature_2m: 14, weather_code: 65, wind_speed_10m: 30 } }),
-        { status: 200 },
-      ),
+    stubFetch(
+      () =>
+        new Response(
+          JSON.stringify({ current: { temperature_2m: 14, weather_code: 65, wind_speed_10m: 30 } }),
+          { status: 200 },
+        ),
     )
     const out = await fetchNiceWeather()
     expect(out.label).toBe('Pluie forte')
@@ -42,11 +49,12 @@ describe('fetchNiceWeather', () => {
   })
 
   it('maps an unknown weather code to a neutral label', async () => {
-    stubFetch(() =>
-      new Response(
-        JSON.stringify({ current: { temperature_2m: 18, weather_code: 999, wind_speed_10m: 5 } }),
-        { status: 200 },
-      ),
+    stubFetch(
+      () =>
+        new Response(
+          JSON.stringify({ current: { temperature_2m: 18, weather_code: 999, wind_speed_10m: 5 } }),
+          { status: 200 },
+        ),
     )
     const out = await fetchNiceWeather()
     expect(out.label).toBe('Conditions variables')

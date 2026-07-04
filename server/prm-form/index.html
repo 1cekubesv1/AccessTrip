@@ -1,73 +1,205 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Demande d'assistance PMR — Formulaire compagnie</title>
-  <style>
-    body { font-family: system-ui, sans-serif; background: #eef2f7; color: #14213d; margin: 0; padding: 2rem; }
-    .form-card { max-width: 720px; margin: 0 auto; background: #fff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,.08); overflow: hidden; }
-    .form-head { background: #14213d; color: #fff; padding: 1.2rem 1.5rem; }
-    .form-head h1 { margin: 0; font-size: 1.2rem; }
-    .form-head p { margin: .3rem 0 0; opacity: .8; font-size: .9rem; }
-    form { padding: 1.5rem; }
-    fieldset { border: 1px solid #d7deea; border-radius: 8px; margin: 0 0 1.2rem; padding: 1rem 1.2rem; }
-    legend { font-weight: 700; padding: 0 .4rem; color: #14213d; }
-    .row { display: flex; gap: 1rem; flex-wrap: wrap; }
-    .field { flex: 1; min-width: 200px; margin-bottom: .9rem; }
-    label { display: block; font-size: .85rem; font-weight: 600; margin-bottom: .3rem; }
-    input, select, textarea { width: 100%; padding: .55rem .6rem; border: 1px solid #c3ccdb; border-radius: 6px; font: inherit; box-sizing: border-box; }
-    input:focus, select:focus, textarea:focus { outline: 3px solid #ffd54a; border-color: #14213d; }
-    .checks label { display: flex; align-items: center; gap: .5rem; font-weight: 500; margin-bottom: .4rem; }
-    .checks input { width: auto; }
-    .submit { background: #1f7a4d; color: #fff; border: none; padding: .8rem 1.4rem; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; }
-    .stamp { display: none; margin-top: 1rem; padding: .8rem; background: #e5f4ec; border: 1px solid #1f7a4d; border-radius: 8px; color: #14532d; font-weight: 600; }
-    .stamp.show { display: block; }
-  </style>
-</head>
-<body>
-  <div class="form-card">
-    <div class="form-head">
-      <h1>Demande d'assistance PMR</h1>
-      <p>Formulaire passager à mobilité réduite · Réf. IATA WCHC / DPNA</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demande d'assistance PMR — Formulaire compagnie</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        background: #eef2f7;
+        color: #14213d;
+        margin: 0;
+        padding: 2rem;
+      }
+      .form-card {
+        max-width: 720px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+      }
+      .form-head {
+        background: #14213d;
+        color: #fff;
+        padding: 1.2rem 1.5rem;
+      }
+      .form-head h1 {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+      .form-head p {
+        margin: 0.3rem 0 0;
+        opacity: 0.8;
+        font-size: 0.9rem;
+      }
+      form {
+        padding: 1.5rem;
+      }
+      fieldset {
+        border: 1px solid #d7deea;
+        border-radius: 8px;
+        margin: 0 0 1.2rem;
+        padding: 1rem 1.2rem;
+      }
+      legend {
+        font-weight: 700;
+        padding: 0 0.4rem;
+        color: #14213d;
+      }
+      .row {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .field {
+        flex: 1;
+        min-width: 200px;
+        margin-bottom: 0.9rem;
+      }
+      label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 0.55rem 0.6rem;
+        border: 1px solid #c3ccdb;
+        border-radius: 6px;
+        font: inherit;
+        box-sizing: border-box;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: 3px solid #ffd54a;
+        border-color: #14213d;
+      }
+      .checks label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        margin-bottom: 0.4rem;
+      }
+      .checks input {
+        width: auto;
+      }
+      .submit {
+        background: #1f7a4d;
+        color: #fff;
+        border: none;
+        padding: 0.8rem 1.4rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+      .stamp {
+        display: none;
+        margin-top: 1rem;
+        padding: 0.8rem;
+        background: #e5f4ec;
+        border: 1px solid #1f7a4d;
+        border-radius: 8px;
+        color: #14532d;
+        font-weight: 600;
+      }
+      .stamp.show {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-card">
+      <div class="form-head">
+        <h1>Demande d'assistance PMR</h1>
+        <p>Formulaire passager à mobilité réduite · Réf. IATA WCHC / DPNA</p>
+      </div>
+      <form
+        id="prm-form"
+        onsubmit="
+          event.preventDefault()
+          document.getElementById('stamp').classList.add('show')
+        "
+      >
+        <fieldset>
+          <legend>Passager</legend>
+          <div class="row">
+            <div class="field">
+              <label for="nom">Nom complet</label><input id="nom" name="nom" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="age">Âge</label><input id="age" name="age" autocomplete="off" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="langue">Langue</label><input id="langue" name="langue" autocomplete="off" />
+          </div>
+          <div class="field">
+            <label for="contact">Contact d'urgence</label
+            ><input id="contact" name="contact" autocomplete="off" />
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Équipement mobilité</legend>
+          <div class="row">
+            <div class="field">
+              <label for="equip_type">Type</label
+              ><input id="equip_type" name="equip_type" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="equip_modele">Modèle</label
+              ><input id="equip_modele" name="equip_modele" autocomplete="off" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="equip_poids">Poids (kg)</label
+              ><input id="equip_poids" name="equip_poids" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="equip_batterie">Batterie</label
+              ><input id="equip_batterie" name="equip_batterie" autocomplete="off" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="equip_dim">Dimensions (L×l×h cm)</label
+            ><input id="equip_dim" name="equip_dim" autocomplete="off" />
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Besoins d'assistance</legend>
+          <div class="checks">
+            <label
+              ><input type="checkbox" id="need_transfert" name="need_transfert" /> Transfert assisté
+              (ne peut pas transférer seul)</label
+            >
+            <label
+              ><input type="checkbox" id="need_sansmarche" name="need_sansmarche" /> Itinéraire sans
+              marche</label
+            >
+            <label
+              ><input type="checkbox" id="need_embarquement" name="need_embarquement" /> Assistance
+              embarquement / débarquement</label
+            >
+          </div>
+          <div class="field" style="margin-top: 0.8rem">
+            <label for="remarques">Remarques</label
+            ><textarea id="remarques" name="remarques" rows="2"></textarea>
+          </div>
+        </fieldset>
+
+        <button type="submit" class="submit">Soumettre la demande</button>
+        <div class="stamp" id="stamp">✓ Demande PMR enregistrée — référence AEG-PRM-2209.</div>
+      </form>
     </div>
-    <form id="prm-form" onsubmit="event.preventDefault(); document.getElementById('stamp').classList.add('show');">
-      <fieldset>
-        <legend>Passager</legend>
-        <div class="row">
-          <div class="field"><label for="nom">Nom complet</label><input id="nom" name="nom" autocomplete="off" /></div>
-          <div class="field"><label for="age">Âge</label><input id="age" name="age" autocomplete="off" /></div>
-        </div>
-        <div class="field"><label for="langue">Langue</label><input id="langue" name="langue" autocomplete="off" /></div>
-        <div class="field"><label for="contact">Contact d'urgence</label><input id="contact" name="contact" autocomplete="off" /></div>
-      </fieldset>
-
-      <fieldset>
-        <legend>Équipement mobilité</legend>
-        <div class="row">
-          <div class="field"><label for="equip_type">Type</label><input id="equip_type" name="equip_type" autocomplete="off" /></div>
-          <div class="field"><label for="equip_modele">Modèle</label><input id="equip_modele" name="equip_modele" autocomplete="off" /></div>
-        </div>
-        <div class="row">
-          <div class="field"><label for="equip_poids">Poids (kg)</label><input id="equip_poids" name="equip_poids" autocomplete="off" /></div>
-          <div class="field"><label for="equip_batterie">Batterie</label><input id="equip_batterie" name="equip_batterie" autocomplete="off" /></div>
-        </div>
-        <div class="field"><label for="equip_dim">Dimensions (L×l×h cm)</label><input id="equip_dim" name="equip_dim" autocomplete="off" /></div>
-      </fieldset>
-
-      <fieldset>
-        <legend>Besoins d'assistance</legend>
-        <div class="checks">
-          <label><input type="checkbox" id="need_transfert" name="need_transfert" /> Transfert assisté (ne peut pas transférer seul)</label>
-          <label><input type="checkbox" id="need_sansmarche" name="need_sansmarche" /> Itinéraire sans marche</label>
-          <label><input type="checkbox" id="need_embarquement" name="need_embarquement" /> Assistance embarquement / débarquement</label>
-        </div>
-        <div class="field" style="margin-top:.8rem"><label for="remarques">Remarques</label><textarea id="remarques" name="remarques" rows="2"></textarea></div>
-      </fieldset>
-
-      <button type="submit" class="submit">Soumettre la demande</button>
-      <div class="stamp" id="stamp">✓ Demande PMR enregistrée — référence AEG-PRM-2209.</div>
-    </form>
-  </div>
-</body>
+  </body>
 </html>

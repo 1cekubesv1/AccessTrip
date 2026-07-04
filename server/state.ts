@@ -3,7 +3,14 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { seed } from './seed.js'
-import type { AppState, Step, StepStatus, LedgerEntry, AgentLogEntry, TranscriptChunk } from '../shared/types.js'
+import type {
+  AppState,
+  Step,
+  StepStatus,
+  LedgerEntry,
+  AgentLogEntry,
+  TranscriptChunk,
+} from '../shared/types.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const STATE_FILE = path.join(__dirname, '..', 'data', 'state.json')
@@ -57,7 +64,11 @@ export function findStep(stepId: string): Step | undefined {
   return state.trip.steps.find((s) => s.id === stepId)
 }
 
-export function setStepStatus(stepId: string, status: StepStatus, extra: Partial<Step> = {}): Step | null {
+export function setStepStatus(
+  stepId: string,
+  status: StepStatus,
+  extra: Partial<Step> = {},
+): Step | null {
   const step = findStep(stepId)
   if (!step) return null
   step.status = status
@@ -86,4 +97,13 @@ export function appendTranscript(chunk: TranscriptChunk): TranscriptChunk {
   return chunk
 }
 
-export default { getState, updateState, resetState, findStep, setStepStatus, appendLedger, appendAgentLog, appendTranscript }
+export default {
+  getState,
+  updateState,
+  resetState,
+  findStep,
+  setStepStatus,
+  appendLedger,
+  appendAgentLog,
+  appendTranscript,
+}

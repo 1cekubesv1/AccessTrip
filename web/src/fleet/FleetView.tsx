@@ -56,7 +56,9 @@ export default function FleetView({ state }: { state: AppState }) {
       <section className="kpi-band" aria-label="Vue d'ensemble de la flotte">
         {fleetKpis.map((k) => (
           <div className="kpi" key={k.label}>
-            <span className="kpi-icon" aria-hidden="true">{k.icon}</span>
+            <span className="kpi-icon" aria-hidden="true">
+              {k.icon}
+            </span>
             <span className="kpi-value">{k.value}</span>
             <span className="kpi-label">{k.label}</span>
           </div>
@@ -73,10 +75,14 @@ export default function FleetView({ state }: { state: AppState }) {
 }
 
 const STATUS_COLOR: Record<string, string> = {
-  identified: 'var(--st-identified)', contacted: 'var(--st-contacted)',
-  confirmed: 'var(--st-confirmed)', reconfirmed: 'var(--st-reconfirmed)',
-  in_progress: 'var(--st-inprogress)', done: 'var(--st-done)',
-  at_risk: 'var(--st-atrisk)', failed: 'var(--st-failed)',
+  identified: 'var(--st-identified)',
+  contacted: 'var(--st-contacted)',
+  confirmed: 'var(--st-confirmed)',
+  reconfirmed: 'var(--st-reconfirmed)',
+  in_progress: 'var(--st-inprogress)',
+  done: 'var(--st-done)',
+  at_risk: 'var(--st-atrisk)',
+  failed: 'var(--st-failed)',
 }
 
 function overall(steps: StepStatus[]): { label: string; cls: string } {
@@ -89,19 +95,42 @@ function overall(steps: StepStatus[]): { label: string; cls: string } {
 function FleetCard({ traveler, onOpen }: { traveler: FleetDisplay; onOpen: () => void }) {
   const o = overall(traveler.steps)
   return (
-    <button type="button" className="fleet-card" onClick={onOpen} aria-label={`Ouvrir le voyage de ${traveler.name}`}>
+    <button
+      type="button"
+      className="fleet-card"
+      onClick={onOpen}
+      aria-label={`Ouvrir le voyage de ${traveler.name}`}
+    >
       <div className="fleet-card-head">
-        <span className="fleet-name">{traveler.name}{traveler.live && <span className="live-dot" title="En direct" aria-label="en direct"> ●</span>}</span>
-        <span className="badge" data-status={o.cls}>{o.label}</span>
+        <span className="fleet-name">
+          {traveler.name}
+          {traveler.live && (
+            <span className="live-dot" title="En direct" aria-label="en direct">
+              {' '}
+              ●
+            </span>
+          )}
+        </span>
+        <span className="badge" data-status={o.cls}>
+          {o.label}
+        </span>
       </div>
       <div className="fleet-profile">{traveler.profileShort}</div>
-      <div className="fleet-route">{traveler.route} · <span className="muted">{traveler.dates}</span></div>
+      <div className="fleet-route">
+        {traveler.route} · <span className="muted">{traveler.dates}</span>
+      </div>
       <div className="fleet-bar" aria-hidden="true">
         {traveler.steps.map((s, i) => (
-          <span key={i} className="fleet-seg" style={{ background: STATUS_COLOR[s] || 'var(--line)' }} />
+          <span
+            key={i}
+            className="fleet-seg"
+            style={{ background: STATUS_COLOR[s] || 'var(--line)' }}
+          />
         ))}
       </div>
-      <div className="fleet-foot muted">{traveler.confirmations} confirmation(s) · {traveler.steps.length} étapes</div>
+      <div className="fleet-foot muted">
+        {traveler.confirmations} confirmation(s) · {traveler.steps.length} étapes
+      </div>
     </button>
   )
 }

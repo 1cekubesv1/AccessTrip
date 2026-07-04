@@ -11,25 +11,29 @@ afterEach(() => {
 })
 
 function stubFetch(impl: (url: string) => Promise<Response> | Response) {
-  vi.stubGlobal('fetch', vi.fn((url: string) => Promise.resolve(impl(url))))
+  vi.stubGlobal(
+    'fetch',
+    vi.fn((url: string) => Promise.resolve(impl(url))),
+  )
 }
 
 describe('fetchAxisRegularity', () => {
   it('normalises the Opendatasoft record and rounds to 1 decimal', async () => {
-    stubFetch(() =>
-      new Response(
-        JSON.stringify({
-          results: [
-            {
-              axe: 'Sud-Est',
-              date: '2026-05',
-              regularite_composite: 91.2345,
-              ponctualite_origine: 88.6789,
-            },
-          ],
-        }),
-        { status: 200 },
-      ),
+    stubFetch(
+      () =>
+        new Response(
+          JSON.stringify({
+            results: [
+              {
+                axe: 'Sud-Est',
+                date: '2026-05',
+                regularite_composite: 91.2345,
+                ponctualite_origine: 88.6789,
+              },
+            ],
+          }),
+          { status: 200 },
+        ),
     )
     const { fetchAxisRegularity } = await import('./sncf')
     const out = await fetchAxisRegularity()
@@ -63,7 +67,16 @@ describe('fetchAxisRegularity', () => {
     const spy = vi.fn(() =>
       Promise.resolve(
         new Response(
-          JSON.stringify({ results: [{ axe: 'Sud-Est', date: '2026-05', regularite_composite: 90, ponctualite_origine: 90 }] }),
+          JSON.stringify({
+            results: [
+              {
+                axe: 'Sud-Est',
+                date: '2026-05',
+                regularite_composite: 90,
+                ponctualite_origine: 90,
+              },
+            ],
+          }),
           { status: 200 },
         ),
       ),
@@ -78,8 +91,11 @@ describe('fetchAxisRegularity', () => {
 
 describe('fetchRealtimeDisruptions', () => {
   it('maps total_count + records on success', async () => {
-    stubFetch(() =>
-      new Response(JSON.stringify({ total_count: 2, results: [{ a: 1 }, { b: 2 }] }), { status: 200 }),
+    stubFetch(
+      () =>
+        new Response(JSON.stringify({ total_count: 2, results: [{ a: 1 }, { b: 2 }] }), {
+          status: 200,
+        }),
     )
     const { fetchRealtimeDisruptions } = await import('./sncf')
     const out = await fetchRealtimeDisruptions()

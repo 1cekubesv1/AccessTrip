@@ -8,15 +8,33 @@ afterEach(() => {
 })
 
 function stubContext(body: ContextResponse) {
-  vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(new Response(JSON.stringify(body), { status: 200 }))))
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(() => Promise.resolve(new Response(JSON.stringify(body), { status: 200 }))),
+  )
 }
 
 describe('RealContext', () => {
   it('renders SNCF regularity and Nice weather from /api/context', async () => {
     stubContext({
       ok: true,
-      sncf: { axe: 'Sud-Est', month: '2026-05', regularite: 91.2, ponctualite: 88.7, source: 'SNCF Open Data', live: true },
-      weather: { tempC: 22, windKmh: 12, code: 3, label: 'Couvert', disruptive: false, source: 'Open-Meteo', live: true },
+      sncf: {
+        axe: 'Sud-Est',
+        month: '2026-05',
+        regularite: 91.2,
+        ponctualite: 88.7,
+        source: 'SNCF Open Data',
+        live: true,
+      },
+      weather: {
+        tempC: 22,
+        windKmh: 12,
+        code: 3,
+        label: 'Couvert',
+        disruptive: false,
+        source: 'Open-Meteo',
+        live: true,
+      },
     })
     render(<RealContext />)
 
@@ -38,8 +56,23 @@ describe('RealContext', () => {
   it('degrades silently when the weather temp is unavailable', async () => {
     stubContext({
       ok: true,
-      sncf: { axe: 'Sud-Est', month: null, regularite: 89.1, ponctualite: 88.6, source: 'SNCF (référence)', live: false },
-      weather: { tempC: null, windKmh: null, code: null, label: 'Indisponible', disruptive: false, source: 'Open-Meteo', live: false },
+      sncf: {
+        axe: 'Sud-Est',
+        month: null,
+        regularite: 89.1,
+        ponctualite: 88.6,
+        source: 'SNCF (référence)',
+        live: false,
+      },
+      weather: {
+        tempC: null,
+        windKmh: null,
+        code: null,
+        label: 'Indisponible',
+        disruptive: false,
+        source: 'Open-Meteo',
+        live: false,
+      },
     })
     render(<RealContext />)
 

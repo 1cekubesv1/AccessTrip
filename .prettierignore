@@ -1,0 +1,6 @@
+web/dist
+node_modules
+data
+coverage
+pnpm-lock.yaml
+package-lock.json

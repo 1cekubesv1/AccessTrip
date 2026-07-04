@@ -16,7 +16,10 @@ export default function ReplanCard({ replan, onApplied }: ReplanCardProps) {
     setBusy(true)
     setError('')
     try {
-      const res = await fetch('/api/replan/apply', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+      const res = await fetch('/api/replan/apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      })
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       if (onApplied) await onApplied()
     } catch (err) {
@@ -27,7 +30,12 @@ export default function ReplanCard({ replan, onApplied }: ReplanCardProps) {
   }
 
   return (
-    <section className="panel" aria-labelledby="replan-title" aria-live="polite" style={{ borderColor: 'var(--st-atrisk)' }}>
+    <section
+      className="panel"
+      aria-labelledby="replan-title"
+      aria-live="polite"
+      style={{ borderColor: 'var(--st-atrisk)' }}
+    >
       <h2 id="replan-title">Plan de remédiation proposé</h2>
       {!replan ? (
         <p className="muted">Aucune remédiation en attente. Le voyage est stable.</p>
@@ -40,16 +48,27 @@ export default function ReplanCard({ replan, onApplied }: ReplanCardProps) {
             {replan.plan.map((item, i) => (
               <li key={i} style={{ marginBottom: '0.5rem' }}>
                 <strong>{item.stepId}</strong> — {item.action}
-                {item.new_time && <> · <span className="ref">{item.new_time}</span></>}
+                {item.new_time && (
+                  <>
+                    {' '}
+                    · <span className="ref">{item.new_time}</span>
+                  </>
+                )}
                 <br />
-                <span className="muted" style={{ fontSize: '0.88rem' }}>{item.rationale}</span>
+                <span className="muted" style={{ fontSize: '0.88rem' }}>
+                  {item.rationale}
+                </span>
               </li>
             ))}
           </ol>
           <button type="button" className="primary" onClick={apply} disabled={busy}>
             {busy ? 'Application…' : '✓ Appliquer le plan'}
           </button>
-          {error && <p style={{ color: 'var(--st-failed)' }} role="alert">Échec : {error}</p>}
+          {error && (
+            <p style={{ color: 'var(--st-failed)' }} role="alert">
+              Échec : {error}
+            </p>
+          )}
         </>
       )}
     </section>

@@ -35,20 +35,32 @@ export function useEvents(): UseEventsResult {
 
     // Named events emitted by the server. A full reset just re-hydrates.
     const named: ServerEventType[] = [
-      'step_updated', 'agent_log', 'transcript_chunk', 'ledger_entry',
-      'disruption', 'replan_proposed', 'vision_verdict', 'call_status', 'metrics',
-      'agent_state', 'agent_reasoning',
+      'step_updated',
+      'agent_log',
+      'transcript_chunk',
+      'ledger_entry',
+      'disruption',
+      'replan_proposed',
+      'vision_verdict',
+      'call_status',
+      'metrics',
+      'agent_state',
+      'agent_reasoning',
     ]
     named.forEach((type) => {
       es.addEventListener(type, (e: MessageEvent) => {
         try {
           const { payload } = JSON.parse(e.data)
           apply(type, payload)
-        } catch { /* ignore malformed */ }
+        } catch {
+          /* ignore malformed */
+        }
       })
     })
 
-    es.addEventListener('state_reset', () => { reload() })
+    es.addEventListener('state_reset', () => {
+      reload()
+    })
 
     return () => es.close()
   }, [reload])
@@ -63,8 +75,12 @@ export function reduce(prev: AppState, type: ServerEventType, payload: any): App
   const next: AppState = { ...prev }
   switch (type) {
     case 'step_updated': {
-      next.trip = { ...prev.trip, steps: prev.trip.steps.map((s) =>
-        s.id === payload.stepId ? { ...s, ...payload, status: payload.status ?? s.status } : s) }
+      next.trip = {
+        ...prev.trip,
+        steps: prev.trip.steps.map((s) =>
+          s.id === payload.stepId ? { ...s, ...payload, status: payload.status ?? s.status } : s,
+        ),
+      }
       break
     }
     case 'agent_log':

@@ -10,7 +10,9 @@ async function main(): Promise<void> {
   assert(state.traveler.name === 'Camille Moreau', 'traveler name mismatch')
   assert(state.ledger.length >= 2, 'ledger seed missing')
 
-  const reset = (await (await fetch(`${BASE}/api/demo/reset`, { method: 'POST' })).json()) as { ok: boolean }
+  const reset = (await (await fetch(`${BASE}/api/demo/reset`, { method: 'POST' })).json()) as {
+    ok: boolean
+  }
   assert(reset.ok === true, 'reset did not return ok')
 
   console.log('SMOKE OK — 7 steps, seed intact, reset works.')

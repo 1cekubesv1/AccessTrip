@@ -16,20 +16,34 @@ export default function Passport({ traveler }: { traveler: Traveler }) {
       </ul>
       <dl style={{ margin: 0, fontSize: '0.9rem' }}>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <dt className="muted" style={{ minWidth: 92 }}>Équipement</dt>
-          <dd style={{ margin: 0 }}>{eq.type} — {eq.model}</dd>
+          <dt className="muted" style={{ minWidth: 92 }}>
+            Équipement
+          </dt>
+          <dd style={{ margin: 0 }}>
+            {eq.type} — {eq.model}
+          </dd>
         </div>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <dt className="muted" style={{ minWidth: 92 }}>Poids</dt>
-          <dd style={{ margin: 0 }}>{eq.weight_kg} kg · {eq.dimensions_cm.l}×{eq.dimensions_cm.w}×{eq.dimensions_cm.h} cm</dd>
+          <dt className="muted" style={{ minWidth: 92 }}>
+            Poids
+          </dt>
+          <dd style={{ margin: 0 }}>
+            {eq.weight_kg} kg · {eq.dimensions_cm.l}×{eq.dimensions_cm.w}×{eq.dimensions_cm.h} cm
+          </dd>
         </div>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <dt className="muted" style={{ minWidth: 92 }}>Batterie</dt>
+          <dt className="muted" style={{ minWidth: 92 }}>
+            Batterie
+          </dt>
           <dd style={{ margin: 0 }}>{eq.battery}</dd>
         </div>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <dt className="muted" style={{ minWidth: 92 }}>Aidant</dt>
-          <dd style={{ margin: 0 }}>{traveler.caregiver.name} ({traveler.caregiver.relation}, {traveler.caregiver.access})</dd>
+          <dt className="muted" style={{ minWidth: 92 }}>
+            Aidant
+          </dt>
+          <dd style={{ margin: 0 }}>
+            {traveler.caregiver.name} ({traveler.caregiver.relation}, {traveler.caregiver.access})
+          </dd>
         </div>
       </dl>
     </section>

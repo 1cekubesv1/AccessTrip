@@ -14,12 +14,18 @@ export default function App() {
 
   return (
     <>
-      <a className="skip-link" href="#main">Aller au contenu principal</a>
+      <a className="skip-link" href="#main">
+        Aller au contenu principal
+      </a>
       <header className="app-header">
         <Wordmark />
-        <span className="muted app-tagline" aria-hidden="true">{APP_TAGLINE}</span>
+        <span className="muted app-tagline" aria-hidden="true">
+          {APP_TAGLINE}
+        </span>
         <nav className="app-nav" aria-label="Vues">
-          <NavLink to="/" end>Flotte</NavLink>
+          <NavLink to="/" end>
+            Flotte
+          </NavLink>
           <NavLink to="/traveler/camille">Voyageuse</NavLink>
           <NavLink to="/ops">Centre de contrôle</NavLink>
           <NavLink to="/demo">Démo</NavLink>

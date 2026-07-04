@@ -10,8 +10,24 @@ function baseState(): AppState {
     trip: {
       label: 'Paris → Nice',
       steps: [
-        { id: 's1', title: 'A', provider: 'P', when: 'now', depends_on: [], status: 'confirmed', ref: 'R1' },
-        { id: 's2', title: 'B', provider: 'P', when: 'later', depends_on: ['s1'], status: 'confirmed', ref: 'R2' },
+        {
+          id: 's1',
+          title: 'A',
+          provider: 'P',
+          when: 'now',
+          depends_on: [],
+          status: 'confirmed',
+          ref: 'R1',
+        },
+        {
+          id: 's2',
+          title: 'B',
+          provider: 'P',
+          when: 'later',
+          depends_on: ['s1'],
+          status: 'confirmed',
+          ref: 'R2',
+        },
       ],
     },
     ledger: [],
@@ -36,7 +52,11 @@ describe('reduce', () => {
 
   it('step_updated patches the matching step by id', () => {
     const prev = baseState()
-    const next = reduce(prev, 'step_updated', { stepId: 's2', status: 'at_risk', reason: 'weather' })
+    const next = reduce(prev, 'step_updated', {
+      stepId: 's2',
+      status: 'at_risk',
+      reason: 'weather',
+    })
     expect(next.trip.steps[1].status).toBe('at_risk')
     expect(next.trip.steps[1].reason).toBe('weather')
     // untouched step keeps its status; original array is not mutated
@@ -102,7 +122,13 @@ describe('reduce', () => {
 
   it('vision_verdict unwraps { verdict }', () => {
     const prev = baseState()
-    const verdict = { conforme: true, confiance: 0.9, critere: 'roll-in', preuve: 'photo', recommandation: 'ok' }
+    const verdict = {
+      conforme: true,
+      confiance: 0.9,
+      critere: 'roll-in',
+      preuve: 'photo',
+      recommandation: 'ok',
+    }
     const next = reduce(prev, 'vision_verdict', { verdict })
     expect(next.visionVerdict).toEqual(verdict)
   })
@@ -114,7 +140,10 @@ describe('reduce', () => {
   })
 
   it('metrics merges onto existing metrics', () => {
-    const prev = { ...baseState(), metrics: { minutesRecovered: 5, interventions: 1, callsMade: 2 } }
+    const prev = {
+      ...baseState(),
+      metrics: { minutesRecovered: 5, interventions: 1, callsMade: 2 },
+    }
     const next = reduce(prev, 'metrics', { callsMade: 3 })
     expect(next.metrics).toEqual({ minutesRecovered: 5, interventions: 1, callsMade: 3 })
   })

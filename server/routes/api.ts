@@ -22,7 +22,11 @@ router.get('/state', (req, res) => {
 // One-click reset to the exact seed. Broadcasts so every open tab re-hydrates.
 router.post('/demo/reset', (req, res) => {
   const state = resetState()
-  pushEvent('agent_log', { agent: 'system', level: 'info', message: 'Démo réinitialisée à l\'état initial.' })
+  pushEvent('agent_log', {
+    agent: 'system',
+    level: 'info',
+    message: "Démo réinitialisée à l'état initial.",
+  })
   pushEvent('state_reset', { at: new Date().toISOString() })
   res.json({ ok: true, state })
 })
@@ -79,7 +83,12 @@ router.post('/replan/apply', (req, res) => {
   for (const item of plan.plan) {
     const step = setStepStatus(item.stepId, 'reconfirmed', { when: item.new_time, reason: null })
     if (!step) continue
-    pushEvent('step_updated', { stepId: item.stepId, status: 'reconfirmed', when: item.new_time, reason: null })
+    pushEvent('step_updated', {
+      stepId: item.stepId,
+      status: 'reconfirmed',
+      when: item.new_time,
+      reason: null,
+    })
 
     const entry = appendLedger({
       step: item.stepId,
@@ -92,7 +101,11 @@ router.post('/replan/apply', (req, res) => {
     pushEvent('ledger_entry', { entry })
   }
 
-  const applied = appendAgentLog({ agent: 'planner', level: 'info', message: 'Plan appliqué — toutes les étapes re-confirmées.' })
+  const applied = appendAgentLog({
+    agent: 'planner',
+    level: 'info',
+    message: 'Plan appliqué — toutes les étapes re-confirmées.',
+  })
   pushEvent('agent_log', applied)
 
   // Impact metrics (KPI band)
@@ -124,13 +137,18 @@ router.post('/vision/check', async (req, res) => {
 // Force a step to any status (with optional reason/when). Mutates + broadcasts.
 router.post('/demo/force-step', (req, res) => {
   const { stepId, status, reason = null, when } = req.body || {}
-  if (!stepId || !status) return res.status(400).json({ ok: false, error: 'stepId + status requis' })
+  if (!stepId || !status)
+    return res.status(400).json({ ok: false, error: 'stepId + status requis' })
   const extra: Partial<Step> = { reason }
   if (when) extra.when = when
   const step = setStepStatus(stepId, status, extra)
   if (!step) return res.status(404).json({ ok: false, error: 'étape inconnue' })
   pushEvent('step_updated', { stepId, status, reason, ...(when ? { when } : {}) })
-  const entry = appendAgentLog({ agent: 'présentateur', level: 'info', message: `Forçage manuel : ${stepId} → ${status}.` })
+  const entry = appendAgentLog({
+    agent: 'présentateur',
+    level: 'info',
+    message: `Forçage manuel : ${stepId} → ${status}.`,
+  })
   pushEvent('agent_log', entry)
   res.json({ ok: true, step })
 })

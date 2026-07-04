@@ -37,11 +37,27 @@ export function fallbackPlan(): ReplanPlan {
   return {
     at_risk: ['s3', 's4'],
     plan: [
-      { stepId: 's3', action: "Nouveau créneau d'assistance arrivée Nice-Ville", new_time: '12/09 15:53', rationale: 'TGV 6173 retardé de 55 min, arrivée repoussée' },
-      { stepId: 's4', action: 'Taxi adapté repoussé', new_time: '12/09 15:55', rationale: "Aligné sur la nouvelle heure d'arrivée assistée" },
-      { stepId: 's5', action: 'Hôtel Beau Rivage prévenu du retard', new_time: '12/09 16:40', rationale: 'Arrivée tardive signalée, chambre 104 accessible maintenue' },
+      {
+        stepId: 's3',
+        action: "Nouveau créneau d'assistance arrivée Nice-Ville",
+        new_time: '12/09 15:53',
+        rationale: 'TGV 6173 retardé de 55 min, arrivée repoussée',
+      },
+      {
+        stepId: 's4',
+        action: 'Taxi adapté repoussé',
+        new_time: '12/09 15:55',
+        rationale: "Aligné sur la nouvelle heure d'arrivée assistée",
+      },
+      {
+        stepId: 's5',
+        action: 'Hôtel Beau Rivage prévenu du retard',
+        new_time: '12/09 16:40',
+        rationale: 'Arrivée tardive signalée, chambre 104 accessible maintenue',
+      },
     ],
-    message_voyageur: "Votre TGV a du retard, mais tout est déjà réorganisé. Votre assistance et votre taxi vous attendront à la nouvelle heure, et l'hôtel est prévenu.",
+    message_voyageur:
+      "Votre TGV a du retard, mais tout est déjà réorganisé. Votre assistance et votre taxi vous attendront à la nouvelle heure, et l'hôtel est prévenu.",
   }
 }
 
@@ -60,14 +76,25 @@ export interface PlanRemediationResult {
 
 // `fallback` is the deterministic plan for this disruption (from the scenario
 // catalog). Claude refines it when available; otherwise the fallback is used.
-export async function planRemediation({ traveler, steps, disruption, fallback }: PlanRemediationArgs): Promise<PlanRemediationResult> {
+export async function planRemediation({
+  traveler,
+  steps,
+  disruption,
+  fallback,
+}: PlanRemediationArgs): Promise<PlanRemediationResult> {
   const fb = fallback || fallbackPlan()
   if (!hasClaude()) return { plan: fb, source: 'fallback' }
 
   try {
     const user = JSON.stringify({
       profil_fonctionnel: traveler.profile_functional_needs,
-      etapes: steps.map((s) => ({ id: s.id, titre: s.title, quand: s.when, depend_de: s.depends_on, statut: s.status })),
+      etapes: steps.map((s) => ({
+        id: s.id,
+        titre: s.title,
+        quand: s.when,
+        depend_de: s.depends_on,
+        statut: s.status,
+      })),
       perturbation: disruption,
     })
     const plan = await claudeJSON({ system: SYSTEM, user, schema: PLAN_SCHEMA })

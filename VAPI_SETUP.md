@@ -26,6 +26,7 @@ Everything below is the only part I can't do for you — it needs your accounts.
    > raccroche jamais sans avoir reformulé ce qui a été dit.
 
    Copy the assistant ID → `VAPI_ASSISTANT_ID`.
+
 4. Set the **teammate's real phone number** (E.164, e.g. `+336XXXXXXXX`) → `RECEPTIONIST_PHONE`.
 
 ## 2. ngrok tunnel (so Vapi can reach the webhook)
@@ -57,6 +58,7 @@ instead of the simulation.
 ## 4. Rehearse the receptionist (3 branches)
 
 The teammate answering the phone rehearses all three, per the spec:
+
 - **B1 happy:** confirms room 104, gives the name "Mme Laurent".
 - **B2 stage branch (play this on stage):** "Ah… la 104 a été réattribuée, nous
   n'avons plus de chambre accessible ce soir-là." Polite, slightly embarrassed,

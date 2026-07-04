@@ -4,12 +4,36 @@ import Timeline, { StatusBadge } from './Timeline'
 import type { Step, LedgerEntry } from '../../../shared/types'
 
 const steps: Step[] = [
-  { id: 's1', title: 'Assistance gare', provider: "Assist'enGare", when: '12/09 08:15', depends_on: [], status: 'reconfirmed', ref: 'AEG-1' },
-  { id: 's2', title: 'TGV Paris → Nice', provider: 'SNCF', when: '12/09 09:03', depends_on: ['s1'], status: 'at_risk', ref: 'TGV-2', reason: 'météo' },
+  {
+    id: 's1',
+    title: 'Assistance gare',
+    provider: "Assist'enGare",
+    when: '12/09 08:15',
+    depends_on: [],
+    status: 'reconfirmed',
+    ref: 'AEG-1',
+  },
+  {
+    id: 's2',
+    title: 'TGV Paris → Nice',
+    provider: 'SNCF',
+    when: '12/09 09:03',
+    depends_on: ['s1'],
+    status: 'at_risk',
+    ref: 'TGV-2',
+    reason: 'météo',
+  },
 ]
 
 const ledger: LedgerEntry[] = [
-  { step: 's1', confirmed_by: 'Mme Laurent', channel: 'appel IA', at: 'T-14j', ref: 'AEG-1', notes: 'ok' },
+  {
+    step: 's1',
+    confirmed_by: 'Mme Laurent',
+    channel: 'appel IA',
+    at: 'T-14j',
+    ref: 'AEG-1',
+    notes: 'ok',
+  },
 ]
 
 describe('StatusBadge', () => {

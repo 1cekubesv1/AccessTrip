@@ -13,18 +13,42 @@ export default function KpiBand({ state }: KpiBandProps) {
   const accessibleHeld = steps.filter((s) => s.status !== 'failed').length
 
   const kpis = [
-    { key: 'incidents', label: 'Incidents interceptés', value: (state.disruptions || []).length, icon: '🛡️' },
-    { key: 'interventions', label: 'Remédiations appliquées', value: m.interventions || 0, icon: '⚙️' },
-    { key: 'minutes', label: 'Minutes récupérées', value: m.minutesRecovered || 0, icon: '⏱️', suffix: ' min' },
+    {
+      key: 'incidents',
+      label: 'Incidents interceptés',
+      value: (state.disruptions || []).length,
+      icon: '🛡️',
+    },
+    {
+      key: 'interventions',
+      label: 'Remédiations appliquées',
+      value: m.interventions || 0,
+      icon: '⚙️',
+    },
+    {
+      key: 'minutes',
+      label: 'Minutes récupérées',
+      value: m.minutesRecovered || 0,
+      icon: '⏱️',
+      suffix: ' min',
+    },
     { key: 'calls', label: 'Appels IA passés', value: m.callsMade || 0, icon: '📞' },
-    { key: 'access', label: 'Accessibilité tenue', value: accessibleHeld, suffix: `/${steps.length}`, icon: '♿' },
+    {
+      key: 'access',
+      label: 'Accessibilité tenue',
+      value: accessibleHeld,
+      suffix: `/${steps.length}`,
+      icon: '♿',
+    },
   ]
 
   return (
     <section className="kpi-band" aria-label="Métriques d'impact">
       {kpis.map((k) => (
         <div className="kpi" key={k.key}>
-          <span className="kpi-icon" aria-hidden="true">{k.icon}</span>
+          <span className="kpi-icon" aria-hidden="true">
+            {k.icon}
+          </span>
           <Kpi value={k.value} suffix={k.suffix} />
           <span className="kpi-label">{k.label}</span>
         </div>
@@ -45,7 +69,8 @@ function Kpi({ value, suffix }: { value: number | string; suffix?: string }) {
   }, [value])
   return (
     <span className="kpi-value" key={pulse} data-pulse={pulse}>
-      {value}{suffix || ''}
+      {value}
+      {suffix || ''}
     </span>
   )
 }

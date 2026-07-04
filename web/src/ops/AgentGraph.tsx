@@ -31,18 +31,28 @@ export default function AgentGraph({ agentStates = {}, reasoning = [] }: AgentGr
   return (
     <section className="panel agent-graph" aria-labelledby="orchestra-title">
       <h2 id="orchestra-title">Orchestre d'agents</h2>
-      <p className="muted" style={{ marginTop: '-0.3rem' }}>Le raisonnement de chaque agent IA, en direct.</p>
+      <p className="muted" style={{ marginTop: '-0.3rem' }}>
+        Le raisonnement de chaque agent IA, en direct.
+      </p>
 
       <div className="orchestra" role="list">
         {AGENTS.map((a, i) => {
           const active = !!agentStates[a.id]
           return (
             <React.Fragment key={a.id}>
-              <div className={`agent-node ${active ? 'is-active' : ''}`} role="listitem" aria-label={`${a.name} : ${active ? 'actif' : 'en veille'}`}>
-                <span className="agent-node-icon" aria-hidden="true">{a.icon}</span>
+              <div
+                className={`agent-node ${active ? 'is-active' : ''}`}
+                role="listitem"
+                aria-label={`${a.name} : ${active ? 'actif' : 'en veille'}`}
+              >
+                <span className="agent-node-icon" aria-hidden="true">
+                  {a.icon}
+                </span>
                 <span className="agent-node-name">{a.name}</span>
                 <span className="agent-node-role">{a.role}</span>
-                <span className="agent-node-thought">{active && latest[a.id] ? latest[a.id] : ''}</span>
+                <span className="agent-node-thought">
+                  {active && latest[a.id] ? latest[a.id] : ''}
+                </span>
                 <span className={`agent-dot ${active ? 'on' : ''}`} aria-hidden="true" />
               </div>
               {i < AGENTS.length - 1 && <span className="agent-link" aria-hidden="true" />}
@@ -51,9 +61,17 @@ export default function AgentGraph({ agentStates = {}, reasoning = [] }: AgentGr
         })}
       </div>
 
-      <div className="reason-stream" ref={streamRef} role="log" aria-live="polite" aria-label="Raisonnement des agents en direct">
+      <div
+        className="reason-stream"
+        ref={streamRef}
+        role="log"
+        aria-live="polite"
+        aria-label="Raisonnement des agents en direct"
+      >
         {reasoning.length === 0 ? (
-          <p className="muted" style={{ margin: 0 }}>En attente d'activité. Injectez une perturbation ou lancez un appel.</p>
+          <p className="muted" style={{ margin: 0 }}>
+            En attente d'activité. Injectez une perturbation ou lancez un appel.
+          </p>
         ) : (
           reasoning.map((r, i) => (
             <div className="reason-line" key={i}>

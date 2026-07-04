@@ -8,8 +8,15 @@ export default function RealContext() {
 
   useEffect(() => {
     let alive = true
-    fetch('/api/context').then((r) => r.json()).then((d) => { if (alive && d.ok) setCtx(d) }).catch(() => {})
-    return () => { alive = false }
+    fetch('/api/context')
+      .then((r) => r.json())
+      .then((d) => {
+        if (alive && d.ok) setCtx(d)
+      })
+      .catch(() => {})
+    return () => {
+      alive = false
+    }
   }, [])
 
   if (!ctx) return null
@@ -23,7 +30,9 @@ export default function RealContext() {
         <span className="rc-item">
           🚆 Axe {sncf.axe} · <strong>{sncf.regularite}%</strong> de régularité
           {sncf.month && <span className="muted"> · {sncf.month}</span>}
-          <span className={`rc-badge ${sncf.live ? 'live' : ''}`}>{sncf.live ? 'données réelles SNCF' : 'référence'}</span>
+          <span className={`rc-badge ${sncf.live ? 'live' : ''}`}>
+            {sncf.live ? 'données réelles SNCF' : 'référence'}
+          </span>
         </span>
       )}
 

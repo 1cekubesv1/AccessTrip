@@ -5,7 +5,11 @@
 let cachedVoices: SpeechSynthesisVoice[] = []
 
 function loadVoices(): void {
-  try { cachedVoices = window.speechSynthesis.getVoices() || [] } catch { cachedVoices = [] }
+  try {
+    cachedVoices = window.speechSynthesis.getVoices() || []
+  } catch {
+    cachedVoices = []
+  }
 }
 
 if (typeof window !== 'undefined' && window.speechSynthesis) {
@@ -25,14 +29,17 @@ function frenchVoices(): SpeechSynthesisVoice[] {
 
 // Speak one line. `who` = 'assistant' (the AI) or 'human' (the receptionist).
 // Returns the utterance so callers can await its `end` if needed.
-export function speak(text: string, { who = 'assistant' }: { who?: 'assistant' | 'human' } = {}): SpeechSynthesisUtterance | null {
+export function speak(
+  text: string,
+  { who = 'assistant' }: { who?: 'assistant' | 'human' } = {},
+): SpeechSynthesisUtterance | null {
   if (!supportsSpeech() || !text) return null
   const u = new SpeechSynthesisUtterance(text)
   u.lang = 'fr-FR'
   const voices = frenchVoices()
   if (voices.length) {
     // assistant = first FR voice; human = a different one if available
-    u.voice = who === 'assistant' ? voices[0] : (voices[1] || voices[0])
+    u.voice = who === 'assistant' ? voices[0] : voices[1] || voices[0]
   }
   u.rate = who === 'assistant' ? 1.0 : 1.03
   u.pitch = who === 'assistant' ? 1.06 : 0.92

@@ -51,7 +51,13 @@ export interface ClaudeResponse {
 
 // Call Claude and return parsed JSON matching `schema` (a JSON Schema object).
 // Throws on any failure so callers can fall back deterministically.
-export async function claudeJSON({ system, user, schema, maxTokens = 1500, timeoutMs = 12000 }: ClaudeJSONArgs): Promise<any> {
+export async function claudeJSON({
+  system,
+  user,
+  schema,
+  maxTokens = 1500,
+  timeoutMs = 12000,
+}: ClaudeJSONArgs): Promise<any> {
   if (!hasClaude()) throw new Error('ANTHROPIC_API_KEY not set')
 
   const controller = new AbortController()

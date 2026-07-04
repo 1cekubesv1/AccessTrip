@@ -23,21 +23,29 @@ router.post('/vapi', async (req, res) => {
     if (type === 'transcript' && msg.transcriptType === 'final') {
       const speaker: 'assistant' | 'human' = msg.role === 'assistant' ? 'assistant' : 'human'
       const chunk = { speaker, text: msg.transcript as string }
-      updateState((s) => { s.transcript.push(chunk) })
+      updateState((s) => {
+        s.transcript.push(chunk)
+      })
       pushEvent('transcript_chunk', chunk)
     } else if (type === 'status-update') {
       const status = msg.status // queued | ringing | in-progress | ended
-      updateState((s) => { s.call = { ...s.call, status: status === 'in-progress' ? 'in_progress' : status } })
+      updateState((s) => {
+        s.call = { ...s.call, status: status === 'in-progress' ? 'in_progress' : status }
+      })
       pushEvent('call_status', { status: status === 'in-progress' ? 'in_progress' : status })
       if (status === 'ringing') log('caller', 'info', 'Le téléphone sonne…')
     } else if (type === 'end-of-call-report') {
-      updateState((s) => { s.call = { ...s.call, status: 'ended' } })
+      updateState((s) => {
+        s.call = { ...s.call, status: 'ended' }
+      })
       pushEvent('call_status', { status: 'ended' })
       log('caller', 'info', 'Appel terminé — extraction de la confirmation…')
       const transcript = getState().transcript
       // attach recording if present
       if (msg.recordingUrl) {
-        updateState((s) => { s.call.recordingUrl = msg.recordingUrl })
+        updateState((s) => {
+          s.call.recordingUrl = msg.recordingUrl
+        })
       }
       await runExtractionAndRecover(transcript)
     }

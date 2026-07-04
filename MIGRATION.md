@@ -92,6 +92,7 @@ Migrating AccessTrip from JavaScript (ESM) to TypeScript, switching the package 
 ## Phase 6 — ESLint & Prettier
 
 **ESLint**
+
 - Add dev deps: `eslint`, `typescript-eslint`, `@eslint/js`, `eslint-plugin-react`, `eslint-plugin-react-hooks`, `globals` (and `eslint-plugin-react-refresh` for the Vite fast-refresh rule).
 - Add a flat config `eslint.config.js` (ESM, matches `"type": "module"`):
   - `@eslint/js` recommended + `typescript-eslint` recommended.
@@ -100,6 +101,7 @@ Migrating AccessTrip from JavaScript (ESM) to TypeScript, switching the package 
   - `ignores`: `web/dist`, `node_modules`, `data`.
 
 **Prettier**
+
 - Add dev deps: `prettier` and `eslint-config-prettier` (the latter turns off ESLint's formatting rules so the two don't fight; add it **last** in the `eslint.config.js` config array).
 - Add `.prettierrc` matching the codebase's existing style (no semicolons, single quotes, 2-space indent, trailing commas) and a `.prettierignore` (`web/dist`, `node_modules`, `data`, `pnpm-lock.yaml`, `package-lock.json`).
 - Add scripts (dodging the PATH bug):

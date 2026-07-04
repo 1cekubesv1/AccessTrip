@@ -62,18 +62,33 @@ export default function VisionCheck({ verdict }: VisionCheckProps) {
           📝 Remplir le formulaire PMR
         </button>
       </div>
-      <p className="muted" role="status" aria-live="polite" style={{ minHeight: '1.2rem', margin: '0 0 0.6rem' }}>{note}</p>
+      <p
+        className="muted"
+        role="status"
+        aria-live="polite"
+        style={{ minHeight: '1.2rem', margin: '0 0 0.6rem' }}
+      >
+        {note}
+      </p>
 
       {verdict && (
         <div className="verdict" data-conforme={verdict.conforme} aria-live="polite">
           <div className="verdict-head">
-            <span className="verdict-flag">{verdict.conforme ? '✓ Conforme' : '✗ Non conforme'}</span>
+            <span className="verdict-flag">
+              {verdict.conforme ? '✓ Conforme' : '✗ Non conforme'}
+            </span>
             <span className="muted">confiance {Math.round((verdict.confiance || 0) * 100)}%</span>
           </div>
-          <div className="verdict-crit"><strong>{verdict.critere}</strong></div>
+          <div className="verdict-crit">
+            <strong>{verdict.critere}</strong>
+          </div>
           <blockquote className="verdict-quote">« {verdict.preuve} »</blockquote>
           <p style={{ margin: 0 }}>{verdict.recommandation}</p>
-          {verdict.source && <p className="muted" style={{ fontSize: '0.78rem', marginTop: '0.4rem' }}>Source : {verdict.source}</p>}
+          {verdict.source && (
+            <p className="muted" style={{ fontSize: '0.78rem', marginTop: '0.4rem' }}>
+              Source : {verdict.source}
+            </p>
+          )}
         </div>
       )}
     </section>

@@ -31,6 +31,7 @@ Build proceeds milestone by milestone (M1 → M6). See `SPEC.md`.
 ### Live vs. offline
 
 The demo runs **fully offline** with no keys: the planner/extractor/vision agents fall back to deterministic results, and `/api/call/start` plays a scripted call over the same SSE pipeline. To go live, fill `AccessTrip/.env`:
+
 - `ANTHROPIC_API_KEY` (direct key, sent as `x-api-key`) **or** `ANTHROPIC_AUTH_TOKEN` + `ANTHROPIC_BASE_URL` (gateway/OAuth, sent as `Authorization: Bearer`) — real Claude planning / extraction / vision.
 - `VAPI_*` + `RECEPTIONIST_PHONE` + `PUBLIC_URL` (ngrok) — a real phone call with streamed transcript. Full walkthrough in **[VAPI_SETUP.md](VAPI_SETUP.md)**.
 

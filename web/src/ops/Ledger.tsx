@@ -29,7 +29,10 @@ export default function Ledger({ ledger }: LedgerProps) {
               {ledger.map((e, i) => (
                 <tr key={i}>
                   <td style={{ fontFamily: 'ui-monospace, monospace' }}>{e.step}</td>
-                  <td>{e.confirmed_by}{e.notes && <div className="muted">{e.notes}</div>}</td>
+                  <td>
+                    {e.confirmed_by}
+                    {e.notes && <div className="muted">{e.notes}</div>}
+                  </td>
                   <td>{e.channel}</td>
                   <td>{e.at}</td>
                   <td className="ref">{e.ref}</td>

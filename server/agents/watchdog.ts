@@ -18,12 +18,18 @@ function log(agent: string, level: LogLevel, message: string): void {
 // Inject a scenario (by id) and run the full cascade. Returns the proposed plan.
 export async function handleChaos(scenarioId = 'tgv-delay'): Promise<ReplanPlan> {
   const scenario = getScenario(scenarioId)
-  const disruption: Disruption = { source: scenario.source, details: scenario.details, scenarioId: scenario.id }
+  const disruption: Disruption = {
+    source: scenario.source,
+    details: scenario.details,
+    scenarioId: scenario.id,
+  }
   const state = getState()
   const affectedIds = scenario.affected.map((a) => a.stepId).join(', ')
 
   // 1. Record + announce the disruption — the watchdog reasons out loud
-  updateState((s) => { s.disruptions.push(disruption) })
+  updateState((s) => {
+    s.disruptions.push(disruption)
+  })
   pushEvent('disruption', disruption)
   log('watchdog', 'warn', `Perturbation détectée — ${disruption.source} : ${disruption.details}.`)
 
@@ -34,18 +40,27 @@ export async function handleChaos(scenarioId = 'tgv-delay'): Promise<ReplanPlan>
       const r = await fetchAxisRegularity()
       if (r) {
         const tag = r.live ? 'données réelles SNCF' : 'référence SNCF'
-        realThoughts.push(`Contexte axe ${r.axe} : ${r.regularite}% de régularité${r.month ? ` (${tag}, ${r.month})` : ` (${tag})`}.`)
+        realThoughts.push(
+          `Contexte axe ${r.axe} : ${r.regularite}% de régularité${r.month ? ` (${tag}, ${r.month})` : ` (${tag})`}.`,
+        )
         disruption.realData = { type: 'sncf', ...r }
       }
     } else if (scenario.source === 'Météo-France') {
       const w = await fetchNiceWeather()
       if (w && w.tempC != null) {
-        realThoughts.push(`Conditions réelles à Nice : ${w.tempC}°C, ${w.label}, vent ${w.windKmh} km/h (${w.source}).`)
+        realThoughts.push(
+          `Conditions réelles à Nice : ${w.tempC}°C, ${w.label}, vent ${w.windKmh} km/h (${w.source}).`,
+        )
         disruption.realData = { type: 'weather', ...w }
       }
     }
-  } catch { /* never block the demo on the network */ }
-  realThoughts.push('Recherche des étapes dépendantes en aval…', `Étapes impactées : ${affectedIds}. Escalade au planificateur.`)
+  } catch {
+    /* never block the demo on the network */
+  }
+  realThoughts.push(
+    'Recherche des étapes dépendantes en aval…',
+    `Étapes impactées : ${affectedIds}. Escalade au planificateur.`,
+  )
 
   await reason('watchdog', realThoughts, { keepActive: true })
   if (disruption.realData) pushEvent('disruption', disruption) // re-emit enriched
@@ -55,30 +70,58 @@ export async function handleChaos(scenarioId = 'tgv-delay'): Promise<ReplanPlan>
     const step = setStepStatus(a.stepId, a.status, { reason: a.reason })
     if (step) {
       pushEvent('step_updated', { stepId: a.stepId, status: a.status, reason: a.reason })
-      log('watchdog', a.status === 'failed' ? 'error' : 'warn', `${a.stepId} → ${a.status} : ${a.reason}.`)
+      log(
+        'watchdog',
+        a.status === 'failed' ? 'error' : 'warn',
+        `${a.stepId} → ${a.status} : ${a.reason}.`,
+      )
       await delay(120)
     }
   }
   agentActive('watchdog', false)
 
   // 3. Planner reasons through the remediation
-  await reason('planner', [
-    'Lecture du profil fonctionnel et des dépendances.',
-    'Contrainte absolue : transfert assisté, sans marche, douche à l\'italienne.',
-    'Génération d\'un plan de remédiation minimal…',
-  ], { keepActive: true })
+  await reason(
+    'planner',
+    [
+      'Lecture du profil fonctionnel et des dépendances.',
+      "Contrainte absolue : transfert assisté, sans marche, douche à l'italienne.",
+      "Génération d'un plan de remédiation minimal…",
+    ],
+    { keepActive: true },
+  )
 
-  const fallback = { at_risk: scenario.affected.map((a) => a.stepId), plan: scenario.plan, message_voyageur: scenario.message_voyageur }
-  const { plan, source } = await planRemediation({ traveler: state.traveler, steps: state.trip.steps, disruption, fallback })
-  think('planner', source === 'claude' ? 'Plan validé par Claude — aucun compromis d\'accessibilité.' : 'Plan validé — aucun compromis d\'accessibilité.')
+  const fallback = {
+    at_risk: scenario.affected.map((a) => a.stepId),
+    plan: scenario.plan,
+    message_voyageur: scenario.message_voyageur,
+  }
+  const { plan, source } = await planRemediation({
+    traveler: state.traveler,
+    steps: state.trip.steps,
+    disruption,
+    fallback,
+  })
+  think(
+    'planner',
+    source === 'claude'
+      ? "Plan validé par Claude — aucun compromis d'accessibilité."
+      : "Plan validé — aucun compromis d'accessibilité.",
+  )
   agentActive('planner', false)
-  log('planner', 'info', source === 'claude'
-    ? 'Plan recalculé par Claude (contraintes d\'accessibilité préservées).'
-    : 'Plan de remédiation calculé (mode hors ligne).')
+  log(
+    'planner',
+    'info',
+    source === 'claude'
+      ? "Plan recalculé par Claude (contraintes d'accessibilité préservées)."
+      : 'Plan de remédiation calculé (mode hors ligne).',
+  )
 
   // 4. Store + broadcast the proposed plan (carry minutesSaved for the KPI band)
   const planWithMeta = { ...plan, minutesSaved: scenario.minutesSaved }
-  updateState((s) => { s.replan = planWithMeta })
+  updateState((s) => {
+    s.replan = planWithMeta
+  })
   pushEvent('replan_proposed', { plan: planWithMeta })
   log('planner', 'info', 'Plan de remédiation proposé — en attente de validation.')
 

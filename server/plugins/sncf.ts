@@ -46,7 +46,14 @@ export async function fetchAxisRegularity(): Promise<SncfRegularity> {
     return out
   } catch {
     // fallback figures (clearly flagged not live) so the UI always shows something
-    return { axe: AXE, month: null, regularite: 89.1, ponctualite: 88.6, source: 'SNCF (référence)', live: false }
+    return {
+      axe: AXE,
+      month: null,
+      regularite: 89.1,
+      ponctualite: 88.6,
+      source: 'SNCF (référence)',
+      live: false,
+    }
   }
 }
 

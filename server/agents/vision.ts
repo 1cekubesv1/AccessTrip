@@ -34,7 +34,8 @@ function fallbackVerdict(): VisionVerdict {
     confiance: 0.82,
     critere: "Douche à l'italienne (roll-in)",
     preuve: 'Ressaut de douche estimé à ~15 cm — un rebord est visible au seuil du bac.',
-    recommandation: "Non conforme à une douche à l'italienne. Signalé à l'hôtel : exiger un accès de plain-pied ou une rampe amovible validée.",
+    recommandation:
+      "Non conforme à une douche à l'italienne. Signalé à l'hôtel : exiger un accès de plain-pied ou une rampe amovible validée.",
   }
 }
 
@@ -43,10 +44,14 @@ export async function checkPhoto(image: ImageInput | null): Promise<VisionVerdic
   let verdict: VisionVerdict
   let source = 'fallback'
 
-  await reason('vision', [
-    'Analyse de la photo fournie.',
-    'Comparaison au besoin : douche à l\'italienne, accès de plain-pied.',
-  ], { keepActive: true })
+  await reason(
+    'vision',
+    [
+      'Analyse de la photo fournie.',
+      "Comparaison au besoin : douche à l'italienne, accès de plain-pied.",
+    ],
+    { keepActive: true },
+  )
 
   if (hasClaude() && image?.base64) {
     try {
@@ -59,11 +64,20 @@ export async function checkPhoto(image: ImageInput | null): Promise<VisionVerdic
     verdict = fallbackVerdict()
   }
 
-  think('vision', verdict.conforme ? 'Conforme au besoin d\'accessibilité.' : `Non conforme : ${verdict.preuve}`)
+  think(
+    'vision',
+    verdict.conforme ? "Conforme au besoin d'accessibilité." : `Non conforme : ${verdict.preuve}`,
+  )
   agentActive('vision', false)
-  updateState((s) => { s.visionVerdict = { ...verdict, source } })
+  updateState((s) => {
+    s.visionVerdict = { ...verdict, source }
+  })
   pushEvent('vision_verdict', { verdict: { ...verdict, source } })
-  pushEvent('agent_log', { agent: 'vision', level: verdict.conforme ? 'info' : 'warn', message: `Vérification visuelle : ${verdict.conforme ? 'conforme' : 'NON conforme'} — ${verdict.critere}.` })
+  pushEvent('agent_log', {
+    agent: 'vision',
+    level: verdict.conforme ? 'info' : 'warn',
+    message: `Vérification visuelle : ${verdict.conforme ? 'conforme' : 'NON conforme'} — ${verdict.critere}.`,
+  })
   return { ...verdict, source }
 }
 
@@ -72,19 +86,35 @@ async function claudeVision(image: ImageInput): Promise<VisionVerdict> {
   const needs = getState().traveler.profile_functional_needs
   const res = await fetch(`${baseUrl()}/v1/messages`, {
     method: 'POST',
-    headers: { 'content-type': 'application/json', 'anthropic-version': '2023-06-01', ...authHeaders() },
+    headers: {
+      'content-type': 'application/json',
+      'anthropic-version': '2023-06-01',
+      ...authHeaders(),
+    },
     body: JSON.stringify({
       model: process.env.ANTHROPIC_MODEL || 'claude-opus-4-8',
       max_tokens: 1000,
       output_config: { format: { type: 'json_schema', schema: VERDICT_SCHEMA } },
       system: SYSTEM,
-      messages: [{
-        role: 'user',
-        content: [
-          { type: 'image', source: { type: 'base64', media_type: image.mediaType || 'image/jpeg', data: image.base64 } },
-          { type: 'text', text: `Besoins fonctionnels du voyageur : ${needs.join(' ; ')}. Cette photo est-elle conforme ?` },
-        ],
-      }],
+      messages: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'image',
+              source: {
+                type: 'base64',
+                media_type: image.mediaType || 'image/jpeg',
+                data: image.base64,
+              },
+            },
+            {
+              type: 'text',
+              text: `Besoins fonctionnels du voyageur : ${needs.join(' ; ')}. Cette photo est-elle conforme ?`,
+            },
+          ],
+        },
+      ],
     }),
   })
   if (!res.ok) throw new Error(`Claude vision HTTP ${res.status}`)
