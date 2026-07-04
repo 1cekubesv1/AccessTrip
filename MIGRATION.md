@@ -65,26 +65,29 @@ Migrating AccessTrip from JavaScript (ESM) to TypeScript, switching the package 
 - Type component props (each `ops/`, `traveler/`, `fleet/`, `demo/` component, including `ops/RealContext.tsx` — type its `ctx` state from the shared `/api/context` response).
 - Add `web/src/vite-env.d.ts` (`/// <reference types="vite/client" />`).
 
-## Phase 5 — Unit tests (Vitest)
+## Phase 5 — Unit tests (Vitest) ✅ done
 
 **Why Vitest:** the project already uses Vite, so Vitest reuses the same ESM/TS transpile pipeline and `@vitejs/plugin-react` with zero extra config (no `ts-jest`/Babel ESM wrangling that Jest would need here). Jest-compatible API, fast, and handles both the Node backend and the jsdom frontend in one runner.
 
-- Add dev deps: `vitest`, `jsdom`, `@testing-library/react`, `@testing-library/jest-dom`, `@testing-library/user-event`, `@vitest/coverage-v8` (optional).
-- Add `vitest.config.ts` using **projects** to split environments in one run:
-  - `server` project — `environment: 'node'`, matches `server/**/*.test.ts` + `scripts/**`.
-  - `web` project — `environment: 'jsdom'`, `plugins: [react()]`, `setupFiles` importing `@testing-library/jest-dom`, matches `web/src/**/*.test.tsx`.
-- Add scripts (dodging the PATH bug):
+- Added dev deps: `vitest`, `jsdom`, `@testing-library/react`, `@testing-library/jest-dom`, `@testing-library/user-event`, `@vitest/coverage-v8`.
+  - **Version pin:** the project is on Vite **5**; Vitest **4** requires Vite 6+ (it imports Vite's `./module-runner` export, absent in Vite 5) and fails at startup with `ERR_PACKAGE_PATH_NOT_EXPORTED`. Pinned `vitest@^3` + `@vitest/coverage-v8@^3` (v3 supports Vite 5 & 6). Bump both to v4 only when Vite itself moves to 6+.
+- Added `vitest.config.ts` using **projects** to split environments in one run:
+  - `server` project — `environment: 'node'`, matches `server/**/*.test.ts` + `scripts/**/*.test.ts`.
+  - `web` project — `environment: 'jsdom'`, `globals: true`, `plugins: [react()]`, `setupFiles: ['./vitest.setup.ts']` (imports `@testing-library/jest-dom/vitest` + `afterEach(cleanup)`), matches `web/src/**/*.test.{ts,tsx}`.
+  - `web/src/vitest.d.ts` imports `@testing-library/jest-dom/vitest` so `tsc` (not just the runtime) sees the matcher augmentation — otherwise `pnpm typecheck` errors on `toBeInTheDocument`.
+- Added scripts (dodging the PATH bug):
   - `"test": "node node_modules/vitest/vitest.mjs run"`
   - `"test:watch": "node node_modules/vitest/vitest.mjs"`
   - `"test:coverage": "node node_modules/vitest/vitest.mjs run --coverage"`
-- Priority targets (pure logic first — highest value, lowest effort):
-  - `web/src/useEvents.ts` — the pure `reduce()` SSE reducer: one test per event type (`step_updated`, `ledger_entry`, `replan_proposed` clear-on-null, `agent_reasoning` slice-to-14, etc.). Prime unit-test target.
-  - `server/state.ts` — `findStep`, `setStepStatus`, `appendLedger`, `appendAgentLog` (500-entry cap), `resetState`; point `STATE_FILE` at a tmp dir or mock `fs`.
-  - `server/seed.ts` — asserts the seed shape the existing `scripts/smoke.js` checks (7 steps, traveler name, ledger seed) — promote those assertions into a real unit test.
-  - `server/plugins/sncf.ts` + `plugins/weather.ts` — mock `fetch` (`vi.stubGlobal`) to assert the normalized mapping **and** the graceful-fallback path when the API errors/times out.
-  - `server/agents/claude.ts` — `hasClaude()` / `authHeaders()` branch logic (api-key vs bearer) with stubbed env.
-  - A couple of component smoke tests (e.g. `ops/RealContext.tsx`, `traveler/Timeline.tsx`) via Testing Library with a mocked `fetch`.
-- Do this **after** Phase 4 so tests are authored in TS against the shared types; the existing `scripts/smoke.js` stays as the live end-to-end check.
+  - `.gitignore`s the `coverage/` output dir.
+- Coverage delivered (55 tests, all green; targeted files fully covered):
+  - `web/src/useEvents.test.ts` — the pure `reduce()` SSE reducer, one test per event type (`step_updated` status-preserve, `ledger_entry` unwrap, `replan_proposed` clear-on-null, `agent_reasoning` slice-to-14, immutability of `prev`, unknown-type passthrough).
+  - `server/state.test.ts` — `findStep`, `setStepStatus`, `appendLedger`, `appendAgentLog` (500-entry cap), `resetState`; `node:fs` is `vi.mock`ed (existsSync→false forces fresh seed, writes are no-ops) so it never touches disk.
+  - `server/seed.test.ts` — the seed shape `scripts/smoke.ts` asserts (7 steps, traveler name, ledger seed) plus deep-copy isolation and dependency integrity.
+  - `server/plugins/sncf.test.ts` + `weather.test.ts` — `vi.stubGlobal('fetch', …)` to assert the normalized mapping **and** the graceful-fallback path on HTTP error; sncf uses `vi.resetModules()` per test to reset its module-level 10-min cache (a dedicated test asserts the cache hit).
+  - `server/agents/claude.test.ts` — `hasClaude()` / `authHeaders()` / `baseUrl()` branch logic (api-key vs bearer, trailing-slash strip) with `vi.stubEnv`.
+  - Component smoke tests `ops/RealContext.test.tsx` (mocked `/api/context` fetch, incl. not-ok + null-weather degrade paths) and `traveler/Timeline.test.tsx` (steps render, receipt count, at-risk reason chip, `StatusBadge` fallback).
+- Done **after** Phase 4 so tests are authored in TS against the shared types; the existing `scripts/smoke.ts` stays as the live end-to-end check.
 
 ## Phase 6 — ESLint & Prettier
 
