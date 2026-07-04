@@ -227,7 +227,7 @@ A preparer en parallele :
 ## 15. Reperes
 
 - Depot et code : dossier `AccessTrip/`.
-- Specification technique detaillee : `AccessTrip/SPEC.md`.
+- Specification technique detaillee : [`docs/architecture/spec.md`](../architecture/spec.md).
 - Lancement : `npm install` puis `npm run dev`, ouvrir http://localhost:5173.
 - Reinitialisation : vue `/demo`, bouton Reset.
 

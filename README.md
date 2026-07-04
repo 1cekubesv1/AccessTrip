@@ -3,7 +3,9 @@
 AI trip-orchestration platform for disabled travelers. Hackathon demo — one traveler
 (Camille Moreau), one trip (Paris → Nice), live-updated over SSE.
 
-Build proceeds milestone by milestone (M1 → M6). See `SPEC.md`.
+Build proceeds milestone by milestone (M1 → M6). See [`docs/architecture/spec.md`](docs/architecture/spec.md).
+
+Full documentation lives in [`docs/`](docs/README.md).
 
 ## Status
 
@@ -33,7 +35,7 @@ Build proceeds milestone by milestone (M1 → M6). See `SPEC.md`.
 The demo runs **fully offline** with no keys: the planner/extractor/vision agents fall back to deterministic results, and `/api/call/start` plays a scripted call over the same SSE pipeline. To go live, fill `AccessTrip/.env`:
 
 - `ANTHROPIC_API_KEY` (direct key, sent as `x-api-key`) **or** `ANTHROPIC_AUTH_TOKEN` + `ANTHROPIC_BASE_URL` (gateway/OAuth, sent as `Authorization: Bearer`) — real Claude planning / extraction / vision.
-- `VAPI_*` + `RECEPTIONIST_PHONE` + `PUBLIC_URL` (ngrok) — a real phone call with streamed transcript. Full walkthrough in **[VAPI_SETUP.md](VAPI_SETUP.md)**.
+- `VAPI_*` + `RECEPTIONIST_PHONE` + `PUBLIC_URL` (ngrok) — a real phone call with streamed transcript. Full walkthrough in **[docs/guides/vapi-setup.md](docs/guides/vapi-setup.md)**.
 
 ### Autofill (M5) — one-time setup
 
