@@ -15,6 +15,23 @@ trip (Paris → Nice), French UI.
 Full documentation lives in [`docs/`](docs/README.md) — note some deeper docs predate the
 pivot and carry a banner pointing here.
 
+## Architecture (tech)
+
+Full technical map, diagram, and an honest "real vs demo" table:
+**[`docs/architecture/ARCHITECTURE.md`](docs/architecture/ARCHITECTURE.md)**.
+
+In one breath: a single Express process (TypeScript strict) streams everything to a
+React 18 front over **SSE**; a pasted booking is turned into a structured trip by
+**Claude** (`/api/ingest`) and persisted in a **durable SQLite store** (`node:sqlite`,
+multi-tenant); **AI agents** (planner, extractor, vision, watchdog, caller) run on
+**real Claude** (HTTP token or the local `claude` CLI bridge) with a deterministic
+fallback; **7 open-data feeds** (SNCF, OpenStreetMap, Open-Meteo, Navitia, acceslibre,
+OpenRouteService) each follow a timeout + cache + reference fallback contract. Guiding
+principle: **never breaks in the demo, goes live the moment a key is present**.
+`~6,250` lines, **91 tests**, TS strict, ESLint/Prettier, Lefthook pre-commit/pre-push.
+A one-page jury brief lives at
+[`docs/AccessTrip_Brief-Technique_v1.pdf`](docs/AccessTrip_Brief-Technique_v1.pdf).
+
 ## History — the milestone build (M1 → M6)
 
 The sections below record the disruption-centric build the app grew from. It's accurate

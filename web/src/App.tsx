@@ -28,7 +28,7 @@ export default function App() {
           <NavLink to="/" end>
             Flotte
           </NavLink>
-          <NavLink to="/traveler/camille">Voyageuse</NavLink>
+          <NavLink to="/traveler/camille">Expérience voyageur</NavLink>
           <NavLink to="/ops">Centre de contrôle</NavLink>
           <NavLink to="/rapport">Rapport</NavLink>
           <NavLink to="/demo">Démo</NavLink>
