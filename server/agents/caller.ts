@@ -37,9 +37,43 @@ function pushChunk(speaker: TranscriptChunk['speaker'], text: string): void {
   pushEvent('transcript_chunk', chunk)
 }
 
-// Start a call. `branch` selects the simulated scenario when there is no Vapi:
+// The provider + accommodation a call is about. Injected into the single live
+// Vapi assistant per call via assistantOverrides.variableValues (the {{callContext}}
+// placeholder in its prompt), so one assistant handles both the airport and the
+// hotel without separate assistant IDs.
+type CallTarget = { provider: string; ask: string; details: string }
+
+const TARGETS: Record<'hotel' | 'airport', CallTarget> = {
+  hotel: {
+    provider: 'Hôtel Beau Rivage',
+    ask: "une chambre accessible avec douche à l'italienne (roll-in shower)",
+    details: 'Chambre 104, référence BR-104-ACC, séjour du 12 septembre.',
+  },
+  airport: {
+    provider: "l'assistance PMR de l'aéroport (Paris CDG puis Nice)",
+    ask: "l'assistance à l'embarquement et au débarquement en fauteuil roulant (WCHC)",
+    details: 'Vol Paris → Nice, fauteuil roulant électrique Permobil M3.',
+  },
+}
+
+function callContextFor(t: CallTarget): string {
+  return [
+    `Prestataire appelé : ${t.provider}.`,
+    `Objectif : confirmer ${t.ask}.`,
+    `Détails : ${t.details}`,
+    'Voyageuse : Camille Moreau. Obtiens une confirmation claire et, si possible,' +
+      " le nom de l'interlocuteur et une référence.",
+  ].join(' ')
+}
+
+// Start a call. `target` selects which provider/accommodation the live assistant
+// is briefed on; `branch` selects the simulated scenario when there is no Vapi:
 // 'B1' happy, 'B2' room-unavailable (the stage branch), 'B3' evasive.
-export async function startCall({ branch = 'B2' }: { branch?: string } = {}) {
+export async function startCall({
+  target = 'hotel',
+  branch = 'B2',
+}: { target?: 'hotel' | 'airport'; branch?: string } = {}) {
+  const t = TARGETS[target] ?? TARGETS.hotel
   updateState((s) => {
     s.transcript = []
     s.metrics.callsMade += 1
@@ -47,17 +81,21 @@ export async function startCall({ branch = 'B2' }: { branch?: string } = {}) {
   pushEvent('metrics', getState().metrics)
   setCall({ status: 'dialing', id: null, mode: hasVapi() ? 'vapi' : 'simulation', branch })
   agentActive('caller', true)
-  think('caller', 'Composition du numéro du prestataire (Hôtel Beau Rivage).')
-  think('caller', "Objectif : re-confirmer la chambre 104 (douche à l'italienne).")
-  log('caller', 'info', `Appel de re-confirmation lancé — chambre 104 (BR-104-ACC).`)
+  think('caller', `Composition du numéro du prestataire (${t.provider}).`)
+  think('caller', `Objectif : confirmer ${t.ask}.`)
+  log('caller', 'info', `Appel lancé — ${t.provider} · ${t.details}`)
 
-  if (hasVapi()) return startVapiCall()
+  if (hasVapi()) return startVapiCall(t)
   return simulateCall(branch)
 }
 
-async function startVapiCall() {
+async function startVapiCall(target: CallTarget) {
   try {
     const publicUrl = (process.env.PUBLIC_URL || '').replace(/\/$/, '')
+    const assistantOverrides = {
+      variableValues: { callContext: callContextFor(target) },
+      ...(publicUrl ? { serverUrl: `${publicUrl}/webhooks/vapi` } : {}),
+    }
     const res = await fetch('https://api.vapi.ai/call', {
       method: 'POST',
       headers: {
@@ -68,7 +106,7 @@ async function startVapiCall() {
         phoneNumberId: process.env.VAPI_PHONE_NUMBER_ID,
         assistantId: process.env.VAPI_ASSISTANT_ID,
         customer: { number: process.env.RECEPTIONIST_PHONE },
-        ...(publicUrl ? { assistantOverrides: { serverUrl: `${publicUrl}/webhooks/vapi` } } : {}),
+        assistantOverrides,
       }),
     })
     if (!res.ok) throw new Error(`Vapi HTTP ${res.status}: ${await res.text().catch(() => '')}`)

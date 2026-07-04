@@ -98,14 +98,18 @@ router.post('/demo/chaos', async (req, res) => {
   }
 })
 
-// Trigger the re-confirmation call for s5 (Vapi if configured, else simulation).
-// Body may pass { branch: 'B1'|'B2'|'B3' } to pick the simulated scenario.
+// Trigger the accessibility call (Vapi if configured, else simulation).
+// Body may pass { target: 'hotel'|'airport' } to brief the live assistant and
+// { branch: 'B1'|'B2'|'B3' } to pick the simulated scenario.
 router.post('/call/start', async (req, res) => {
   try {
+    const target = req.body?.target === 'airport' ? 'airport' : 'hotel'
     const branch = req.body?.branch || 'B2'
     // fire-and-forget: the call streams over SSE; respond immediately
-    startCall({ branch }).catch((err) => console.error('[call] failed:', (err as Error).message))
-    res.json({ ok: true, mode: hasVapi() ? 'vapi' : 'simulation', branch })
+    startCall({ target, branch }).catch((err) =>
+      console.error('[call] failed:', (err as Error).message),
+    )
+    res.json({ ok: true, mode: hasVapi() ? 'vapi' : 'simulation', target, branch })
   } catch (err) {
     res.status(500).json({ ok: false, error: (err as Error).message })
   }
