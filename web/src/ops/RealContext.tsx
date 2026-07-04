@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { TrainFront, Train, Accessibility, Hotel, Thermometer, Check } from 'lucide-react'
+import {
+  TrainFront,
+  Train,
+  Accessibility,
+  Hotel,
+  Thermometer,
+  Check,
+  Landmark,
+  Route,
+} from 'lucide-react'
 import type { ContextResponse } from '../../../shared/types'
 
 // Live real-world context (plugins): real SNCF punctuality for the Paris→Nice
@@ -21,7 +30,7 @@ export default function RealContext() {
   }, [])
 
   if (!ctx) return null
-  const { sncf, weather, assistance, osm, navitia } = ctx
+  const { sncf, weather, assistance, osm, navitia, acceslibre, route } = ctx
 
   return (
     <section className="real-context" aria-label="Contexte réel (données ouvertes)">
@@ -69,6 +78,40 @@ export default function RealContext() {
             </span>
           )}
           <span className={`rc-badge ${osm.live ? 'live' : ''}`}>{osm.source}</span>
+        </span>
+      )}
+
+      {acceslibre && (
+        <span className="rc-item">
+          <Landmark size={15} className="rc-icon" aria-hidden="true" /> Accessibilité{' '}
+          {acceslibre.commune}
+          {acceslibre.count != null ? (
+            <>
+              {' '}
+              · <strong>{acceslibre.count}</strong> ERP référencés
+              {acceslibre.accessible != null && (
+                <span className="muted"> · {acceslibre.accessible} de plain-pied</span>
+              )}
+            </>
+          ) : (
+            <span className="muted"> · {acceslibre.sample.join(', ')}</span>
+          )}
+          <span className={`rc-badge ${acceslibre.live ? 'live' : ''}`}>{acceslibre.source}</span>
+        </span>
+      )}
+
+      {route && (route.distanceM != null || !route.live) && (
+        <span className="rc-item">
+          <Route size={15} className="rc-icon" aria-hidden="true" /> Itinéraire fauteuil{' '}
+          {route.from} → {route.to}
+          {route.distanceM != null && (
+            <>
+              {' '}
+              · <strong>{(route.distanceM / 1000).toFixed(1)} km</strong>
+            </>
+          )}
+          {route.stairsFree && <span className="muted"> · sans escalier</span>}
+          <span className={`rc-badge ${route.live ? 'live' : ''}`}>{route.source}</span>
         </span>
       )}
 
