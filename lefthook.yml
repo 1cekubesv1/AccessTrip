@@ -1,0 +1,22 @@
+# All tools are invoked via `node node_modules/...` because the repo path can
+# contain a ':' that corrupts PATH and breaks node_modules/.bin shims — the same
+# constraint the package.json scripts follow. This applies inside git hooks too.
+pre-commit:
+  parallel: false
+  jobs:
+    - name: format
+      glob: '*.{ts,tsx,js,jsx,json,css,md,html,yml,yaml}'
+      run: node node_modules/prettier/bin/prettier.cjs --write {staged_files}
+      stage_fixed: true
+    - name: lint
+      glob: '*.{ts,tsx,js,jsx}'
+      run: node node_modules/eslint/bin/eslint.js --fix {staged_files}
+      stage_fixed: true
+
+pre-push:
+  parallel: false
+  jobs:
+    - name: typecheck
+      run: node node_modules/typescript/bin/tsc -p tsconfig.server.json --noEmit && node node_modules/typescript/bin/tsc -p tsconfig.web.json --noEmit
+    - name: test
+      run: node node_modules/vitest/vitest.mjs run

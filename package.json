@@ -21,6 +21,7 @@
     "lint:fix": "node node_modules/eslint/bin/eslint.js . --fix",
     "format": "node node_modules/prettier/bin/prettier.cjs --write .",
     "format:check": "node node_modules/prettier/bin/prettier.cjs --check .",
+    "prepare": "node node_modules/lefthook/bin/index.js install",
     "pw:install": "node node_modules/playwright/cli.js install chromium"
   },
   "dependencies": {
@@ -44,6 +45,7 @@
     "eslint-plugin-react-refresh": "^0.5.3",
     "globals": "^17.7.0",
     "jsdom": "^29.1.1",
+    "lefthook": "^2.1.9",
     "playwright": "^1.61.1",
     "prettier": "^3.9.4",
     "react": "^18.3.1",
