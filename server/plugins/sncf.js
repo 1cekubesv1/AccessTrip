@@ -44,6 +44,32 @@ export async function fetchAxisRegularity() {
   }
 }
 
+// Real PMR/disabled assistance for a station (data.sncf.com assistance-psh-pmr).
+let assistCache = { data: null, at: 0 }
+export async function fetchStationAssistance(search = 'Nice') {
+  if (assistCache.data && Date.now() - assistCache.at < TTL) return assistCache.data
+  try {
+    const url = `${BASE}/assistance-psh-pmr/records?limit=5&where=${encodeURIComponent(`search("${search}")`)}`
+    const data = await getJSON(url)
+    const results = data.results || []
+    // prefer the main station (name exactly "Nice" = Nice-Ville), else first
+    const r = results.find((x) => /^nice$/i.test((x.nom || '').trim())) || results[0]
+    if (!r) throw new Error('no record')
+    const out = {
+      gare: r.nom,
+      priseEnCharge: r.typepriseencharge,
+      gratuit: /gratuit/i.test(r.typetarification || ''),
+      rdv: r.lieurendezvousgare,
+      source: 'SNCF Open Data',
+      live: true,
+    }
+    assistCache = { data: out, at: Date.now() }
+    return out
+  } catch {
+    return { gare: 'Nice-Ville', priseEnCharge: 'Réservée et spontanée', gratuit: true, rdv: 'Guichet Assist\'enGare', source: 'SNCF (référence)', live: false }
+  }
+}
+
 // Live SIRI-SX disruption messages (often empty when the network is nominal).
 export async function fetchRealtimeDisruptions() {
   try {
